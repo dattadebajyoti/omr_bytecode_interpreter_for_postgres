@@ -32,6 +32,10 @@
    iii.In the terminal goto: project/pgsql/contrib/omrjit_expr and run the following commands:
       a. make
       b. cp omrjit_expr.so /usr/local/pgsql/lib
+      
+   NOTE: that the CC flag (line: 256) in the Makefile.global at "pgsql/src/Makefile.global" must be gcc while you
+   are building postgresql. And when compiling the omrjit_expr.so or any c++ library you need to change the CC flag
+   to g++.
 
 ALL DONE BUT ATLEAST WE WOULD NEED THE DATA, SO LET'S DOWNLOAD THE DATA FIRST
 
