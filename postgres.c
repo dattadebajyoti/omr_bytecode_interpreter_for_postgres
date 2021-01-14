@@ -4247,10 +4247,10 @@ PostgresMain(int argc, char *argv[],
 	EEOP_NOT_DISTINCT_FUNC = (*EEOP_NOT_DISTINCT_compile)(); //called from 1212
 
 	expr_EEOP_AGGREF_compile = (EEOP_AGGREF_compile *)load_external_function(omrjit_path, "EEOP_AGGREF_compile_func", true, NULL);
-	EEOP_AGGREF_Func = (*expr_EEOP_AGGREF_compile)(); //called from 1498
+	EEOP_AGGREF_Func = (*expr_EEOP_AGGREF_compile)(); //called from 1498*/
 
 	expr_EEOP_ASSIGN_TMP_MAKE_RO_compile = (EEOP_ASSIGN_TMP_MAKE_RO_compile *)load_external_function(omrjit_path, "EEOP_ASSIGN_TMP_MAKE_RO_compile_func", true, NULL);
-	EEOP_ASSIGN_TMP_MAKE_RO_Func = (*expr_EEOP_ASSIGN_TMP_MAKE_RO_compile)(); //called from 645*/
+	EEOP_ASSIGN_TMP_MAKE_RO_Func = (*expr_EEOP_ASSIGN_TMP_MAKE_RO_compile)(); //called from 645
 
 	/*expr_float8_pl_compile = (float8_pl_compile *)load_external_function(omrjit_path, "float8_add_func", true, NULL);
 	float8_omr_add_Func = (*expr_float8_pl_compile)();*/
