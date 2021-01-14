@@ -1956,7 +1956,7 @@ slot_getmissingattrs(TupleTableSlot *slot, int startAttNum, int lastAttNum)
 void
 slot_getsomeattrs_int(TupleTableSlot *slot, int attnum)
 {
-	if (slot->tts_nvalid < attnum){
+	
 		/* Check for caller errors */
 		Assert(slot->tts_nvalid < attnum);	/* checked in slot_getsomeattrs */
 		Assert(attnum > 0);
@@ -1977,7 +1977,7 @@ slot_getsomeattrs_int(TupleTableSlot *slot, int attnum)
 			slot_getmissingattrs(slot, slot->tts_nvalid, attnum);
 			slot->tts_nvalid = attnum;
 		}
-	}
+	
 }
 
 /* ----------------------------------------------------------------
