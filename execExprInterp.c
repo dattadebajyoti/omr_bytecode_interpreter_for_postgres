@@ -480,8 +480,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 		{
 			CheckOpSlotCompatibility(op, innerslot);
 
-			//slot_getsomeattrs(innerslot, op->d.fetch.last_var);
-			slot_getsomeattrs_int(innerslot, op->d.fetch.last_var);
+			slot_getsomeattrs(innerslot, op->d.fetch.last_var);
+			//slot_getsomeattrs_int(innerslot, op->d.fetch.last_var);
 
 			EEO_NEXT();
 		}
@@ -490,8 +490,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 		{
 			CheckOpSlotCompatibility(op, outerslot);
 
-			//slot_getsomeattrs(outerslot, op->d.fetch.last_var);
-			slot_getsomeattrs_int(outerslot, op->d.fetch.last_var);
+			slot_getsomeattrs(outerslot, op->d.fetch.last_var);
+			//slot_getsomeattrs_int(outerslot, op->d.fetch.last_var);
 
 			EEO_NEXT();
 		}
@@ -500,8 +500,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 		{
 			CheckOpSlotCompatibility(op, scanslot);
 
-			//slot_getsomeattrs(scanslot, op->d.fetch.last_var);
-			slot_getsomeattrs_int(scanslot, op->d.fetch.last_var);
+			slot_getsomeattrs(scanslot, op->d.fetch.last_var);
+			//slot_getsomeattrs_int(scanslot, op->d.fetch.last_var);
 
 			EEO_NEXT();
 		}
