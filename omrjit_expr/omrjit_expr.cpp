@@ -919,22 +919,21 @@ slot_compile_deform::att_align_pointer_cal(IlBuilder *b, OMR::JitBuilder::IlValu
 	b->      ConstInt32(-1)));
 
 	//Translation for: (*((uint8 *) (PTR)) != 0)
-	OMR::JitBuilder::IlBuilder *VARATT_NOT_PAD_BYTE_match = NULL;
+	/*OMR::JitBuilder::IlBuilder *VARATT_NOT_PAD_BYTE_match = NULL;
 	attlen_align_pointer_match->IfThen(&VARATT_NOT_PAD_BYTE_match,
     attlen_align_pointer_match->   NotEqualTo(
     attlen_align_pointer_match->      ConvertTo(Int32,
     attlen_align_pointer_match->         Call("t_uint32_func", 1,
     attlen_align_pointer_match->		    ConvertTo(pStr, attptr))),
-	attlen_align_pointer_match->      ConstInt32(0)));
+	attlen_align_pointer_match->      ConstInt32(0)));*/
 
-	//*((uint8 *) (T))
-	/*OMR::JitBuilder::IlBuilder *VARATT_NOT_PAD_BYTE_match = NULL;
+	OMR::JitBuilder::IlBuilder *VARATT_NOT_PAD_BYTE_match = NULL;
 	attlen_align_pointer_match->IfThen(&VARATT_NOT_PAD_BYTE_match,
     attlen_align_pointer_match->   NotEqualTo(
     attlen_align_pointer_match->      UnsignedConvertTo(Int8,
     attlen_align_pointer_match->	     LoadAt(pInt8,
     attlen_align_pointer_match->	        ConvertTo(pInt8, attptr))),
-	attlen_align_pointer_match->      ConstInt32(0)));*/
+	attlen_align_pointer_match->      ConstInt8(0)));
 
 	//Translation for: uintptr_t) (cur_offset)
 	VARATT_NOT_PAD_BYTE_match->Store("off_align_ptr",
