@@ -263,14 +263,17 @@ class slot_compile_deform : public OMR::JitBuilder::MethodBuilder
 
    public:
 
-      slot_compile_deform(OMR::JitBuilder::TypeDictionary *);
+   	  TupleDesc	tupleDesc;
+      slot_compile_deform(OMR::JitBuilder::TypeDictionary *, int32_t, TupleDesc, TupleTableSlot *);
+
+      int32_t natts;
+      TupleTableSlot *slot;
 
       //OMR::JitBuilder::IlValue* fetch_attributes(IlBuilder *, OMR::JitBuilder::IlValue *, OMR::JitBuilder::IlValue *, OMR::JitBuilder::IlValue *);
-      void fetch_attributes(IlBuilder *, char *att, OMR::JitBuilder::IlValue *, OMR::JitBuilder::IlValue *, OMR::JitBuilder::IlValue *);
-      OMR::JitBuilder::IlValue* att_align_nominal_cal(IlBuilder *, OMR::JitBuilder::IlValue *, OMR::JitBuilder::IlValue *);
-      OMR::JitBuilder::IlValue* att_addlength_pointer_cal(IlBuilder *, OMR::JitBuilder::IlValue *, OMR::JitBuilder::IlValue *, OMR::JitBuilder::IlValue *);
-      OMR::JitBuilder::IlValue* att_align_pointer_cal(IlBuilder *, OMR::JitBuilder::IlValue *, OMR::JitBuilder::IlValue *,
-      		OMR::JitBuilder::IlValue *, OMR::JitBuilder::IlValue *);
+      void fetch_attributes(IlBuilder *, char *att, OMR::JitBuilder::IlValue *, Form_pg_attribute );
+      void att_align_nominal_cal(IlBuilder *, OMR::JitBuilder::IlValue *, char *, char );
+      void att_addlength_pointer_cal(IlBuilder *, OMR::JitBuilder::IlValue *, int16_t , OMR::JitBuilder::IlValue *, char *offset);
+      void att_align_pointer_cal(IlBuilder *, OMR::JitBuilder::IlValue *, OMR::JitBuilder::IlValue *, char , char *, int16_t );
 
       virtual bool buildIL();
 
@@ -278,7 +281,7 @@ class slot_compile_deform : public OMR::JitBuilder::MethodBuilder
 
 /****************************************Define the method builder object********************************************************/
 
-slot_compile_deform::slot_compile_deform(OMR::JitBuilder::TypeDictionary *types)
+slot_compile_deform::slot_compile_deform(OMR::JitBuilder::TypeDictionary *types, int32_t natts, TupleDesc	tupleDesc, TupleTableSlot *slot)
    : OMR::JitBuilder::MethodBuilder(types)
    {
    DefineLine(LINETOSTR(__LINE__));
@@ -312,6 +315,14 @@ slot_compile_deform::slot_compile_deform(OMR::JitBuilder::TypeDictionary *types)
    str_rep   = types->PointerTo(pStr);
    pAddress = types->PointerTo(Address);
 
+   /*this->thisatt = new Form_pg_attribute[total_att];
+   for(int32_t i = 0; i < total_att; i++)
+   {
+	   thisatt[i] = att[i];
+   }*/
+   this->tupleDesc = tupleDesc;
+   this->natts = natts;
+   this->slot = slot;
 
    //StructTypeContext      = types->LookupStruct("OMRJitContext");
    //pStructTypeContext     = types->PointerTo(StructTypeContext);
@@ -350,6 +361,7 @@ slot_compile_deform::slot_compile_deform(OMR::JitBuilder::TypeDictionary *types)
    DefineParameter("tuple",    HeapTuple);
 
    DefineParameter("offp",     pInt32);
+   DefineParameter("tp1",     pStr);
 
    DefineFunction((char *)"t_uint32_func",
                   (char *)__FILE__,
@@ -763,285 +775,145 @@ class StructTypeDictionary : public OMR::JitBuilder::TypeDictionary
    };
 
 
-OMR::JitBuilder::IlValue*
-slot_compile_deform::att_addlength_pointer_cal(IlBuilder *b, OMR::JitBuilder::IlValue *cur_offset, OMR::JitBuilder::IlValue *attlen, OMR::JitBuilder::IlValue *attptr)
+void
+slot_compile_deform::att_addlength_pointer_cal(IlBuilder *b, OMR::JitBuilder::IlValue *cur_offset, int16_t attlen, OMR::JitBuilder::IlValue *attptr, char *offset)
 {
-	b->Store("offset", b->ConstInt32(0));
+	//b->Store("offset", b->ConstInt32(0));
 
-	OMR::JitBuilder::IlBuilder *attlen_match1 = NULL;
-	OMR::JitBuilder::IlBuilder *attlen_match1_else = NULL;
+	if(attlen > 0)
+	{
+		b->Store(offset,
+		b->   Add(
+		b->      ConstInt32(attlen),
+		b->      ConvertTo(Int32, cur_offset)));
+	}
+	else if(attlen == -1)
+	{
+		b->Store(offset,
+		b->ConvertTo(Int32,
+	    b->   Add(
+		b->      ConvertTo(Int32, cur_offset),
+		b->      ConvertTo(Int32,
+	    b->         Call("VARSIZE_ANY_func", 1,
+		b->            ConvertTo(pStr, attptr))))));
+	}
+	else
+	{
+		b->Store(offset,
+		b->   ConvertTo(Int32,
+		b->      Add(
+		b->         ConvertTo(Int32, cur_offset),
+		b->         Add(
+		b->            ConstInt32(1),
+		b->            ConvertTo(Int32,
+		b->               Call("strlen_func",1,
+	    b->                  ConvertTo(pStr, attptr))))))     );
+	}
 
-	b->IfThenElse(&attlen_match1, &attlen_match1_else,
-	b->   GreaterThan(
-	b->      ConvertTo(Int16, attlen),
-	b->      ConstInt16(0)));
-
-	//(cur_offset) + (attlen)
-	attlen_match1->Store("offset",
-	attlen_match1->   Add(
-	attlen_match1->      ConvertTo(Int32, attlen),
-	attlen_match1->      ConvertTo(Int32, cur_offset)));
-
-	OMR::JitBuilder::IlBuilder *attlen_match2 = NULL;
-	OMR::JitBuilder::IlBuilder *attlen_match2_else = NULL;
-
-	attlen_match1_else->IfThenElse(&attlen_match2, &attlen_match2_else,
-	attlen_match1_else->   EqualTo(
-	attlen_match1_else->      ConvertTo(Int32, attlen),
-	attlen_match1_else->      ConstInt32(-1)));
-
-	//(cur_offset) + VARSIZE_ANY(attptr)
-	attlen_match2->Store("offset",
-	attlen_match2->ConvertTo(Int32,
-    attlen_match2->   Add(
-	attlen_match2->      ConvertTo(Int32, cur_offset),
-	attlen_match2->      ConvertTo(Int32,
-    attlen_match2->         Call("VARSIZE_ANY_func", 1,
-	attlen_match2->            ConvertTo(pStr, attptr))))));
-
-	//(cur_offset) + (strlen((char *) (attptr)) + 1)
-	attlen_match2_else->Store("offset",
-	attlen_match2_else->   ConvertTo(Int32,
-	attlen_match2_else->      Add(
-	attlen_match2_else->         ConvertTo(Int32, cur_offset),
-	attlen_match2_else->         Add(
-	attlen_match2_else->            ConstInt32(1),
-	attlen_match2_else->            ConvertTo(Int32,
-	attlen_match2_else->               Call("strlen_func",1,
-    attlen_match2_else->                  ConvertTo(pStr, attptr))))))     );
-
-	return b->ConvertTo(Int32, b->Load("offset"));
+	//return b->ConvertTo(Int32, b->Load("offset"));
 
 }
 
-OMR::JitBuilder::IlValue*
-slot_compile_deform::att_align_nominal_cal(IlBuilder *b, OMR::JitBuilder::IlValue *cur_offset, OMR::JitBuilder::IlValue *attalign)
+void
+slot_compile_deform::att_align_nominal_cal(IlBuilder *b, OMR::JitBuilder::IlValue *cur_offset, char *cal_off, char attalign)
 {
 
-	//OMR::JitBuilder::IlValue *off = b->ConstInt32(0);
-	b->Store("cal_off",
-	b->   ConstInt32(0));
-
-	OMR::JitBuilder::IlBuilder *TYPALIGN_INT_match = NULL;
-	OMR::JitBuilder::IlBuilder *TYPALIGN_INT_match_else = NULL;
-
-	//if
-	b->IfThenElse(&TYPALIGN_INT_match, &TYPALIGN_INT_match_else,
-    b->   EqualTo(
-	b->      ConvertTo(Int32, attalign),
-	b->      ConstInt32(TYPALIGN_INT)));
-
-	//#define INTALIGN(LEN)	  TYPEALIGN(ALIGNOF_INT, (LEN))
-	//#define TYPEALIGN(ALIGNVAL,LEN)
-	//   (((uintptr_t) (LEN) + ((ALIGNVAL) - 1)) & ~((uintptr_t) ((ALIGNVAL) - 1))) = (((uintptr_t) (LEN) + 3) & ~((uintptr_t) 3))
-	TYPALIGN_INT_match->Store("cal_off",
-	TYPALIGN_INT_match->   ConvertTo(Int32,
-    TYPALIGN_INT_match->   And(
-    TYPALIGN_INT_match->      Add(
-    TYPALIGN_INT_match->	     ConvertTo(Int32, cur_offset),
-	TYPALIGN_INT_match->         ConstInt32(3)),
-    TYPALIGN_INT_match->      ConstInt32(~3)))    );
-	//TYPALIGN_INT_match->Call("print_func", 2, cur_offset, TYPALIGN_INT_match->ConvertTo(Int32, TYPALIGN_INT_match->Load("cal_off")));
-
-    //else
-	OMR::JitBuilder::IlBuilder *TYPALIGN_CHAR_match = NULL;
-	OMR::JitBuilder::IlBuilder *TYPALIGN_CHAR_match_else = NULL;
-
-	//if
-	//(((attalign) == TYPALIGN_CHAR) ?
-	TYPALIGN_INT_match_else->IfThenElse(&TYPALIGN_CHAR_match, &TYPALIGN_CHAR_match_else,
-	TYPALIGN_INT_match_else->   EqualTo(
-    TYPALIGN_INT_match_else->      ConvertTo(Int32,attalign),
-    TYPALIGN_INT_match_else->      ConstInt32(TYPALIGN_CHAR)));
-
-	//(uintptr_t) (cur_offset)
-	TYPALIGN_CHAR_match->Store("cal_off",
-    TYPALIGN_CHAR_match->ConvertTo(Int32, cur_offset));
-	//TYPALIGN_CHAR_match->Call("print_func", 2, cur_offset, TYPALIGN_CHAR_match->ConvertTo(Int32, off));
-
-    //else
-	OMR::JitBuilder::IlBuilder *TYPALIGN_DOUBLE_match = NULL;
-	OMR::JitBuilder::IlBuilder *TYPALIGN_DOUBLE_match_else = NULL;
-
-	//if
-	//(((attalign) == TYPALIGN_DOUBLE) ?
-	TYPALIGN_CHAR_match_else->IfThenElse(&TYPALIGN_DOUBLE_match, &TYPALIGN_DOUBLE_match_else,
-    TYPALIGN_CHAR_match_else->   EqualTo(
-	TYPALIGN_CHAR_match_else->      ConvertTo(Int32,attalign),
-    TYPALIGN_CHAR_match_else->      ConstInt32(TYPALIGN_DOUBLE)));
-
-	//#define DOUBLEALIGN(LEN)	  TYPEALIGN(ALIGNOF_DOUBLE, (LEN))
-	//#define TYPEALIGN(ALIGNVAL,LEN)
-	//   (((uintptr_t) (LEN) + ((ALIGNVAL) - 1)) & ~((uintptr_t) ((ALIGNVAL) - 1))) = (((uintptr_t) (LEN) + 7) & ~((uintptr_t) 7))
-	TYPALIGN_DOUBLE_match->Store("cal_off",
-    TYPALIGN_DOUBLE_match->   ConvertTo(Int32,
-    TYPALIGN_DOUBLE_match->   And(
-	TYPALIGN_DOUBLE_match->      Add(
-    TYPALIGN_DOUBLE_match->         ConvertTo(Int32, cur_offset),
-	TYPALIGN_DOUBLE_match->         ConstInt32(7)),
-	TYPALIGN_DOUBLE_match->      ConstInt32(~7)))    );
-	//TYPALIGN_DOUBLE_match->Call("print_func", 2, cur_offset, TYPALIGN_DOUBLE_match->ConvertTo(Int32, off));
-
-	//else
-
-	//#define SHORTALIGN(LEN)	TYPEALIGN(ALIGNOF_SHORT, (LEN))
-	//#define TYPEALIGN(ALIGNVAL,LEN)
-	//   (((uintptr_t) (LEN) + ((ALIGNVAL) - 1)) & ~((uintptr_t) ((ALIGNVAL) - 1))) = (((uintptr_t) (LEN) + 1) & ~((uintptr_t) 1))
-	TYPALIGN_DOUBLE_match_else->Store("cal_off",
-	TYPALIGN_DOUBLE_match_else->   ConvertTo(Int32,
-	TYPALIGN_DOUBLE_match_else->   And(
-	TYPALIGN_DOUBLE_match_else->      Add(
-    TYPALIGN_DOUBLE_match_else->         ConvertTo(Int32, cur_offset),
-	TYPALIGN_DOUBLE_match_else->         ConstInt32(1)),
-	TYPALIGN_DOUBLE_match_else->      ConstInt32(~1)))   );
-
-	//TYPALIGN_DOUBLE_match_else->Call("print_func", 2, cur_offset, TYPALIGN_DOUBLE_match_else->ConvertTo(Int32, off));
-
-	//b->Call("print_func", 2, b->ConstInt32(0), b->ConvertTo(Int32, b->Load("cal_off")));
-	//Return (off);
-	return b->Load("cal_off");
+	if(attalign == /*TYPALIGN_INT*/0x69)
+	{
+		b->Store(cal_off,
+		b->   ConvertTo(Int32,
+	    b->   And(
+	    b->      Add(
+	    b->	     ConvertTo(Int32, cur_offset),
+		b->         ConstInt32(3)),
+	    b->      ConstInt32(~3)))    );
+	}
+	else if(attalign == /*TYPALIGN_CHAR*/ 0x63)
+	{
+		b->Store(cal_off,
+	    b->ConvertTo(Int32, cur_offset));
+	}
+	else if(attalign == /*TYPALIGN_DOUBLE*/ 0x64)
+	{
+		b->Store(cal_off,
+	    b->   ConvertTo(Int32,
+	    b->   And(
+		b->      Add(
+	    b->         ConvertTo(Int32, cur_offset),
+		b->         ConstInt32(7)),
+		b->      ConstInt32(~7)))    );
+	}
+	else
+	{
+		b->Store(cal_off,
+		b->   ConvertTo(Int32,
+		b->   And(
+		b->      Add(
+	    b->         ConvertTo(Int32, cur_offset),
+		b->         ConstInt32(1)),
+		b->      ConstInt32(~1)))   );
+	}
 
 }
 
-OMR::JitBuilder::IlValue*
-slot_compile_deform::att_align_pointer_cal(IlBuilder *b, OMR::JitBuilder::IlValue *cur_offset, OMR::JitBuilder::IlValue *attalign,
-		OMR::JitBuilder::IlValue *attlen, OMR::JitBuilder::IlValue *attptr)
+void
+slot_compile_deform::att_align_pointer_cal(IlBuilder *b, OMR::JitBuilder::IlValue *cur_offset, OMR::JitBuilder::IlValue *attptr, char attalign, char *off_align_ptr,
+		int16_t attlen)
 {
-	b->Store("off_align_ptr", b->ConstInt32(0));
+	if(attlen == -1)
+	{
+		OMR::JitBuilder::IlBuilder *VARATT_NOT_PAD_BYTE_match = NULL;
+		b->IfThen(&VARATT_NOT_PAD_BYTE_match,
+	    b->   NotEqualTo(
+	    b->      UnsignedConvertTo(Int8,
+	    b->	     LoadAt(pInt8,
+	    b->	        ConvertTo(pInt8, attptr))),
+		b->      ConstInt8(0)));
 
-	b->Store("off_align_ptr_flag", b->ConstInt32(0));
+		//Translation for: (uintptr_t) (cur_offset)
+		VARATT_NOT_PAD_BYTE_match->Store(off_align_ptr,
+		VARATT_NOT_PAD_BYTE_match->   ConvertTo(Int32, cur_offset));
+	}
+	else
+	{
+		att_align_nominal_cal(b, cur_offset, "cal_off2", attalign);
 
-	OMR::JitBuilder::IlBuilder *attlen_align_pointer_match = NULL;
-
-	b->IfThen(&attlen_align_pointer_match,
-    b->   EqualTo(
-    b->      ConvertTo(Int32, attlen),
-	b->      ConstInt32(-1)));
-
-	//Translation for: (*((uint8 *) (PTR)) != 0)
-	/*OMR::JitBuilder::IlBuilder *VARATT_NOT_PAD_BYTE_match = NULL;
-	attlen_align_pointer_match->IfThen(&VARATT_NOT_PAD_BYTE_match,
-    attlen_align_pointer_match->   NotEqualTo(
-    attlen_align_pointer_match->      ConvertTo(Int32,
-    attlen_align_pointer_match->         Call("t_uint32_func", 1,
-    attlen_align_pointer_match->		    ConvertTo(pStr, attptr))),
-	attlen_align_pointer_match->      ConstInt32(0)));*/
-
-	OMR::JitBuilder::IlBuilder *VARATT_NOT_PAD_BYTE_match = NULL;
-	attlen_align_pointer_match->IfThen(&VARATT_NOT_PAD_BYTE_match,
-    attlen_align_pointer_match->   NotEqualTo(
-    attlen_align_pointer_match->      UnsignedConvertTo(Int8,
-    attlen_align_pointer_match->	     LoadAt(pInt8,
-    attlen_align_pointer_match->	        ConvertTo(pInt8, attptr))),
-	attlen_align_pointer_match->      ConstInt8(0)));
-
-	//Translation for: uintptr_t) (cur_offset)
-	VARATT_NOT_PAD_BYTE_match->Store("off_align_ptr",
-	VARATT_NOT_PAD_BYTE_match->   ConvertTo(Int32, cur_offset));
-
-	//set the flag
-	VARATT_NOT_PAD_BYTE_match->Store("off_align_ptr_flag",
-    VARATT_NOT_PAD_BYTE_match->   ConstInt32(1));
-
-	OMR::JitBuilder::IlBuilder *off_align_ptr_flag_match = NULL;
-
-	b->IfThen(&off_align_ptr_flag_match,
-	b->   EqualTo(
-	b->      Load("off_align_ptr_flag"),
-	b->      ConstInt32(0)));
-
-	off_align_ptr_flag_match->Store("off_align_ptr",
-	off_align_ptr_flag_match->   ConvertTo(Int32, att_align_nominal_cal(off_align_ptr_flag_match, cur_offset, attalign)   ));
-
-
-    return b->Load("off_align_ptr");
-
+		b->Store(off_align_ptr,
+		b->   ConvertTo(Int32,
+	    b->	 	Load("cal_off2")   ));
+	}
 
 }
+
 
 
 void
-slot_compile_deform::fetch_attributes(IlBuilder *b, char *att, OMR::JitBuilder::IlValue *thisatt, OMR::JitBuilder::IlValue *tp, OMR::JitBuilder::IlValue *offset)
+slot_compile_deform::fetch_attributes(IlBuilder *b, char *att, OMR::JitBuilder::IlValue *tp, Form_pg_attribute attribute)
 {
 
-	//b->Store("att", b->ConvertTo(Address,b->ConstInt32(0)));
-	//b->Store("att", b->ConstAddress(0));
-
-	b->Store("attlen",
-	b->   ConvertTo(Int32,
-	b->      LoadIndirect("FormData_pg_attribute", "attlen",thisatt)));
-
-	b->Store("attbyval",
-	b->   ConvertTo(bool_type, b->LoadIndirect("FormData_pg_attribute", "attbyval", thisatt)));
-
-    // For byval: datums copy the value, extend to Datum's width, and store.
-    OMR::JitBuilder::IlBuilder *attbyval_match = NULL;
-    OMR::JitBuilder::IlBuilder *attbyval_match_else = NULL;
-
-    //If byval true
-    b->IfThenElse(&attbyval_match, &attbyval_match_else,
-    b->   EqualTo(
-    b->	  ConvertTo(bool_type, b->Load("attbyval")),
-	b->	  ConvertTo(bool_type, b->ConstInt16(1))));
-
-    //------------------By Value--------------------------
-
-    //Translation for:  (attlen) == (int) sizeof(Datum) ?
-    OMR::JitBuilder::IlBuilder *attlenDat_match = NULL;
-    OMR::JitBuilder::IlBuilder *attlenDat_match_else = NULL;
-
-    //if of datum
-    attbyval_match->IfThenElse(&attlenDat_match, &attlenDat_match_else,
-    attbyval_match->   EqualTo(
-    attbyval_match->      Load("attlen"),
-    attbyval_match->      ConstInt32((int) sizeof(Datum))));
-
-    //Translation for:  *((Datum *)(T))
-    //attlenDat_match->Store("att", attlenDat_match->ConvertTo(Address,attlenDat_match->Call("t_datum_func",1, attlenDat_match->ConvertTo(pStr, tp))));
-    attlenDat_match->Store(att, attlenDat_match->LoadAt(pAddress, attlenDat_match->ConvertTo(pAddress, tp)));
-
-    //else of datum
-    //Check for Int32 representation i.e (attlen) == (int) sizeof(int32) ?
-    OMR::JitBuilder::IlBuilder *attlenInt32_match = NULL;
-    OMR::JitBuilder::IlBuilder *attlenInt32_match_else = NULL;
-
-    //if int32
-    attlenDat_match_else->IfThenElse(&attlenInt32_match, &attlenInt32_match_else,
-    attlenDat_match_else->   EqualTo(
-    attlenDat_match_else->      Load("attlen"),
-    attlenDat_match_else->      ConstInt32((int) sizeof(int32))));
-
-    //Translation for: Int32GetDatum(*((int32 *)(T)))
-    //attlenInt32_match->Store(att, attlenInt32_match->ConvertTo(Address, attlenInt32_match->Call("t_int32_func",1, attlenInt32_match->ConvertTo(pStr, tp))));
-    attlenInt32_match->Store(att, attlenInt32_match->LoadAt(pAddress, attlenInt32_match->ConvertTo(pInt32, attlenInt32_match->ConvertTo(pStr, tp))));
-
-    //else of Int32
-    OMR::JitBuilder::IlBuilder *attlenInt16_match = NULL;
-    OMR::JitBuilder::IlBuilder *attlenInt16_match_else = NULL;
-
-    //if int16
-    attlenInt32_match_else->IfThenElse(&attlenInt16_match, &attlenInt16_match_else,
-    attlenInt32_match_else->   EqualTo(
-    attlenInt32_match_else->      Load("attlen"),
-	attlenInt32_match_else->      ConstInt32((int) sizeof(int16))));
-
-    //Translation for: Int16GetDatum(*((int16 *)(T)))
-    //attlenInt16_match->Store(att, attlenInt16_match->ConvertTo(Address, attlenInt16_match->Call("t_int16_func",1, attlenInt16_match->ConvertTo(pStr, tp))));
-    attlenInt16_match->Store(att, attlenInt16_match->LoadAt(pAddress, attlenInt16_match->ConvertTo(pInt16, attlenInt16_match->ConvertTo(pStr, tp))));
-
-    //else of Int16
-    //translation for: CharGetDatum(*((char *)(T)))
-    //attlenInt16_match_else->Store(att, attlenInt16_match_else->ConvertTo(Address, attlenInt16_match_else->Call("t_str_func",1, attlenInt16_match_else->ConvertTo(pStr, tp))));
-    attlenInt16_match_else->Store(att, attlenInt16_match_else->LoadAt(pAddress, attlenInt16_match_else->ConvertTo(pStr, tp)));
-
-
-    ///------------------By Reference--------------------------
-    //For byref types: store pointer to data.
-    //Translation for: PointerGetDatum((char *) (T))
-    attbyval_match_else->Store(att, attbyval_match_else->ConvertTo(Address, attbyval_match_else->ConvertTo(pStr, tp)));
-
-	//return b->Load("att");
-
+    if(attribute->attbyval)
+    {
+        if(attribute->attlen == (int) sizeof(Datum))
+        {
+        	b->Store(att, b->LoadAt(pAddress, b->ConvertTo(pAddress, tp)));
+        }
+        else if(attribute->attlen == (int) sizeof(int32))
+        {
+        	b->Store(att, b->LoadAt(pAddress, b->ConvertTo(pInt32, b->ConvertTo(pStr, tp))));
+        }
+        else if (attribute->attlen == (int) sizeof(int16))
+        {
+        	b->Store(att, b->LoadAt(pAddress, b->ConvertTo(pInt16, b->ConvertTo(pStr, tp))));
+        }
+        else
+        {
+        	b->Store(att, b->LoadAt(pAddress, b->ConvertTo(pStr, tp)));
+        }
+    }
+    else
+    {
+    	b->Store(att, b->ConvertTo(Address, b->ConvertTo(pStr, tp)));
+    }
 
 }
 
@@ -1053,7 +925,7 @@ slot_compile_deform::buildIL()
    {
 
    /*************************Convert the interpreted model**************************************/
-	//indexer = 0;
+
 	//TupleDesc	tupleDesc = slot_opt->tts_tupleDescriptor;
 	Store("tupleDesc",
 	   LoadIndirect("TupleTableSlot","tts_tupleDescriptor",
@@ -1064,11 +936,11 @@ slot_compile_deform::buildIL()
 	   LoadIndirect("HeapTupleData", "t_data",
 		  Load("tuple")));
 
-    /*Store("tp1", ConvertTo(pInt8, Add(ConvertTo(Address, Load("tup")),
-    		ConvertTo(Word, LoadIndirect("HeapTupleData", "t_hoff", Load("tup")))))  );*/
+    /*OMR::JitBuilder::IlValue *hoff = ConvertTo(Word, LoadIndirect("HeapTupleHeaderData", "t_hoff", Load("tup")));
+    Store("tp1", ConvertTo(pInt8, Add(ConvertTo(Address, Load("tup")), hoff)));*/
 
-    Store("tp1",
-	   Call("tp_func", 1, Load("tup")));
+    /*Store("tp1",
+	   Call("tp_func", 1, Load("tup")));*/
 
 	//uint32		off;			/* offset in tuple data */
 	Store("off", ConstInt32(0));
@@ -1077,24 +949,6 @@ slot_compile_deform::buildIL()
 	Store("slow", ConvertTo(bool_type, ConstInt16(false)));
 
 	/* We can only fetch as many attributes as the tuple has. */
-
-	Store("HeapTupleHeaderGetNatts",
-	   And(
-	      ConvertTo(Int32, LoadIndirect("HeapTupleHeaderData", "t_infomask2",
-	         Load("tup"))),
-		  ConstInt32(HEAP_NATTS_MASK)));//HEAP_NATTS_MASK = 2047
-
-	//find the min
-	OMR::JitBuilder::IlBuilder *natts_min_match = NULL;
-	IfThen(&natts_min_match,
-	   LessThan(
-	      Load("HeapTupleHeaderGetNatts"),
-	      ConvertTo(Int32,
-	         Load("natts"))));
-	{
-		natts_min_match->Store("natts",
-	    natts_min_match->   Load("HeapTupleHeaderGetNatts"));
-	}
 
 	//bool hasnulls = HeapTupleHasNulls(tuple);  (((tuple)->t_data->t_infomask & 0x0001) != 0)
     Store("hasnulls", ConstInt32(0));
@@ -1119,61 +973,48 @@ slot_compile_deform::buildIL()
 	 * Check whether the first call for this tuple, and initialize or restore
 	 * loop state.
 	 */
-	//attnum = slot_opt->tts_nvalid;
-	Store("attnum",
-	   ConvertTo(Int32, LoadIndirect("TupleTableSlot", "tts_nvalid",
-	      Load("slot"))));
 
-	OMR::JitBuilder::IlBuilder *attnum_match = NULL;
-	IfThen(&attnum_match,
-	   NotEqualTo(
-	      Load("attnum"),
-	      ConstInt32(0)));
-
-	//if(attnum != 0)
+	int32_t attnum = (int32_t)slot->tts_nvalid;
+	if(attnum != 0)
 	{
-		//Restore state from previous execution
-		//off = *off_opt;
-		attnum_match->Store("off",
-	    attnum_match->   ConvertTo(Int32,
-	    attnum_match->      LoadAt(pInt32,
-	    attnum_match->         Load("offp"))));
+		Store("off",
+	       ConvertTo(Int32,
+	          LoadAt(pInt32,
+	             Load("offp"))));
 
 		//slow = TTS_SLOW(slot_opt);
-		attnum_match->Store("slow",
-		attnum_match->   ConvertTo(bool_type,
-		attnum_match->      NotEqualTo(
-		attnum_match->         And(
-		attnum_match->            LoadIndirect("TupleTableSlot", "tts_flags",
-		attnum_match->               Load("slot")),
-		attnum_match->            ConstInt16(8)),
-		attnum_match->		   ConstInt16(0))));
+		Store("slow",
+		   ConvertTo(bool_type,
+		      NotEqualTo(
+		         And(
+		            LoadIndirect("TupleTableSlot", "tts_flags",
+		               Load("slot")),
+		            ConstInt16(8)),
+				   ConstInt16(0))));
 	}
 
 
-	OMR::JitBuilder::IlBuilder *loop = NULL;
-	ForLoopUp("attnum_index", &loop,
-	   ConvertTo(Int32, Load("attnum")),
-	   ConvertTo(Int32, Load("natts")),
-	   ConstInt32(1));
+
+	for(; attnum < natts; attnum++)
 
 	{
-		//Form_pg_attribute thisatt = TupleDescAttr(tupleDesc, attnum);
-		loop->Store("thisatt",
-		loop->   IndexAt(pFormData_pg_attribute,
-		loop->      StructFieldInstanceAddress("TupleDescData", "attrs",
-		loop->         Load("tupleDesc")),
-		loop->       ConvertTo(Int32,
-		loop->          Load("attnum")))            );
+		Form_pg_attribute thisatt = TupleDescAttr(tupleDesc, attnum);
+
+		Store("thisatt",
+		   IndexAt(pFormData_pg_attribute,
+		      StructFieldInstanceAddress("TupleDescData", "attrs",
+		         Load("tupleDesc")),
+		       ConvertTo(Int32,
+		          ConstInt32(attnum)))            );
 
 		//if hasnull
-		IlBuilder *hasnull_builder = loop->OrphanBuilder();
+		IlBuilder *hasnull_builder = OrphanBuilder();
 		OMR::JitBuilder::IlValue *hasnull_L = hasnull_builder->EqualTo(
 											  hasnull_builder->   Load("hasnulls"),
 											  hasnull_builder->   ConstInt32(1));
 
         //if att_isnull :- att_isnull(ATT, BITS) (!((BITS)[(ATT) >> 3] & (1 << ((ATT) & 0x07))))
-		IlBuilder *att_isnull_builder = loop->OrphanBuilder();
+		IlBuilder *att_isnull_builder = OrphanBuilder();
 		OMR::JitBuilder::IlValue *att_isnull_R = att_isnull_builder->NotEqualTo(
 												 att_isnull_builder->      And(
 												 att_isnull_builder->         ConvertTo(Int32,
@@ -1183,21 +1024,21 @@ slot_compile_deform::buildIL()
 												 att_isnull_builder->                     Load("tup")),
 												 att_isnull_builder->                  ShiftR(
 												 att_isnull_builder->                     ConvertTo(Int32,
-												 att_isnull_builder->                        Load("attnum")),
+												 att_isnull_builder->                        ConstInt32(attnum)),
 												 att_isnull_builder->                     ConstInt32(3))))),
 												 att_isnull_builder->         ShiftL(
 												 att_isnull_builder->            ConstInt32(1),
 												 att_isnull_builder->            And(
 												 att_isnull_builder->               ConvertTo(Int32,
-												 att_isnull_builder->				   Load("attnum")),
+												 att_isnull_builder->				   ConstInt32(attnum)),
 												 att_isnull_builder->               ConstInt32(7)))),
 												 att_isnull_builder->      ConstInt32(0));
 
 
 		IlBuilder *null_true = NULL, *null_false = NULL;
-		loop->IfAnd(&null_true, &null_false, 2,
-		loop->   MakeCondition(hasnull_builder, hasnull_L),
-		loop->   MakeCondition(att_isnull_builder, att_isnull_R));
+		IfAnd(&null_true, &null_false, 2,
+		   MakeCondition(hasnull_builder, hasnull_L),
+		   MakeCondition(att_isnull_builder, att_isnull_R));
 
 		//values[attnum] = (Datum) 0;
 		null_true->StoreAt(
@@ -1205,7 +1046,7 @@ slot_compile_deform::buildIL()
 		null_true->      LoadIndirect("TupleTableSlot", "tts_values",
 		null_true->         Load("slot")),
 		null_true->	  ConvertTo(Int32,
-		null_true->	     Load("attnum"))),
+		null_true->	     ConstInt32(attnum))),
 		null_true->   ConvertTo(Address,
 	    null_true->	     ConstInt32(0)));
 
@@ -1215,7 +1056,7 @@ slot_compile_deform::buildIL()
 		null_true->      LoadIndirect("TupleTableSlot", "tts_isnull",
 		null_true->         Load("slot")),
 		null_true->      ConvertTo(Int32,
-		null_true->         Load("attnum"))),
+		null_true->         ConstInt32(attnum))),
 		null_true->   ConvertTo(bool_type,
 		null_true->      ConstInt16(true)));
 
@@ -1233,7 +1074,7 @@ slot_compile_deform::buildIL()
 		null_false->      LoadIndirect("TupleTableSlot", "tts_isnull",
 		null_false->         Load("slot")),
 		null_false->		 ConvertTo(Int32,
-		null_false->          Load("attnum"))),
+		null_false->          ConstInt32(attnum))),
 		null_false->   ConvertTo(bool_type,
 		null_false->      ConstInt16(false)));
 
@@ -1263,6 +1104,13 @@ slot_compile_deform::buildIL()
 		rc1True->      LoadIndirect("FormData_pg_attribute", "attcacheoff",
 		rc1True->         Load("thisatt"))));
 
+		//
+		/*if(thisatt->attcacheoff >= 0)
+		{
+			OMR::JitBuilder::IlBuilder *thisatt_attlen_negative_match = NULL;
+		}*/
+		//
+
 
 		OMR::JitBuilder::IlBuilder *thisatt_attlen_negative_match = NULL;
 		OMR::JitBuilder::IlBuilder *thisatt_attlen_negative_match_else = NULL;
@@ -1285,13 +1133,12 @@ slot_compile_deform::buildIL()
 
 		//in-else if ... off == att_align_nominal(off, thisatt->attalign)
 		IlBuilder *x_lt_U_builder1 = thisatt_attlen_negative_match->OrphanBuilder();
+		att_align_nominal_cal(x_lt_U_builder1, x_lt_U_builder1->ConvertTo(Int32, x_lt_U_builder1->Load("off")),
+											  "cal_off", thisatt->attalign);
+
 		OMR::JitBuilder::IlValue *x_lt_U1 = x_lt_U_builder1->EqualTo(
 		                                      x_lt_U_builder1->   Load("off"),
-		                                      x_lt_U_builder1->   ConvertTo(Int32, att_align_nominal_cal(x_lt_U_builder1,
-		                                      x_lt_U_builder1->      ConvertTo(Int32,
-		                                      x_lt_U_builder1->         Load("off")),
-											  x_lt_U_builder1->      LoadIndirect("FormData_pg_attribute", "attalign",
-											  x_lt_U_builder1->         Load("thisatt"))))      );
+		                                      x_lt_U_builder1->   Load("cal_off")      );
 
 		IlBuilder *rc1True1 = NULL, *slow_off_att_align_nominal_match_else = NULL;
 		thisatt_attlen_negative_match->IfAnd(&rc1True1, &slow_off_att_align_nominal_match_else, 2,
@@ -1304,16 +1151,17 @@ slot_compile_deform::buildIL()
 		rc1True1->      Load("off")));
 
 		//in-else if ... off = att_align_pointer_cal
-		slow_off_att_align_nominal_match_else->Store("off",
-	    slow_off_att_align_nominal_match_else->   ConvertTo(Int32,
 		att_align_pointer_cal(                        slow_off_att_align_nominal_match_else,
 	    slow_off_att_align_nominal_match_else->          Load("off"),
-		slow_off_att_align_nominal_match_else->          LoadIndirect("FormData_pg_attribute", "attalign",
-		slow_off_att_align_nominal_match_else->             Load("thisatt")),
-		slow_off_att_align_nominal_match_else->          ConstInt32(-1),
 		slow_off_att_align_nominal_match_else->          Add(
 		slow_off_att_align_nominal_match_else->             Load("tp1"),
-		slow_off_att_align_nominal_match_else->             Load("off"))   )));
+		slow_off_att_align_nominal_match_else->             Load("off")),
+														 thisatt->attalign, "off_align_ptr", -1);
+
+
+		slow_off_att_align_nominal_match_else->Store("off",
+	    slow_off_att_align_nominal_match_else->   ConvertTo(Int32,
+	    slow_off_att_align_nominal_match_else->      Load("off_align_ptr")));
 
 		//in-else if ... slow = true;
 		slow_off_att_align_nominal_match_else->Store("slow",
@@ -1321,13 +1169,14 @@ slot_compile_deform::buildIL()
 		slow_off_att_align_nominal_match_else->      ConstInt16(true)));
 
         //in-else
+		att_align_nominal_cal(thisatt_attlen_negative_match_else,
+		thisatt_attlen_negative_match_else->      ConvertTo(Int32,
+		thisatt_attlen_negative_match_else->         Load("off")),
+												  "cal_off1", thisatt->attalign);
+
 		thisatt_attlen_negative_match_else->Store("off",
 		thisatt_attlen_negative_match_else->   ConvertTo(Int32,
-				                               att_align_nominal_cal(thisatt_attlen_negative_match_else,
-	    thisatt_attlen_negative_match_else->      ConvertTo(Int32,
-	    thisatt_attlen_negative_match_else->         Load("off")),
-		thisatt_attlen_negative_match_else->      LoadIndirect("FormData_pg_attribute", "attalign",
-		thisatt_attlen_negative_match_else->         Load("thisatt")))));
+		thisatt_attlen_negative_match_else->      Load("cal_off1")));
 
 		//in-else ... if (!slow)
 		OMR::JitBuilder::IlBuilder *slow_thisatt_attlen_negative_match_else = NULL;
@@ -1346,75 +1195,45 @@ slot_compile_deform::buildIL()
 		slow_thisatt_attlen_negative_match_else->      Load("off")));
 
 		//values[attnum] = fetchatt(thisatt, tp + off);
-		/*null_false->StoreAt(
-		null_false->   IndexAt(pDatum,
-		null_false->      LoadIndirect("TupleTableSlot", "tts_values",
-		null_false->         Load("slot")),
-		null_false->		 ConvertTo(Int32,
-		null_false->          Load("attnum"))),
-		null_false->   ConvertTo(Address,
-			  fetch_attributes(null_false,
-		null_false->         Load("thisatt"),
-		null_false->         Add(
-		null_false->            Load("tp1"),
-		null_false->			  ConvertTo(Int32,
-		null_false->			     Load("off"))),
-		null_false->		   ConvertTo(Int32,
-		null_false->            Load("off")))));*/
 
         fetch_attributes(null_false, "att",
-        null_false->         Load("thisatt"),
         null_false->         Add(
         null_false->            Load("tp1"),
         null_false->			  ConvertTo(Int32,
-        null_false->			     Load("off"))),
-        null_false->		   ConvertTo(Int32,
-        null_false->            Load("off")));
+        null_false->			     Load("off"))), thisatt);
 
 		null_false->StoreAt(
 		null_false->   IndexAt(pDatum,
 		null_false->      LoadIndirect("TupleTableSlot", "tts_values",
 		null_false->         Load("slot")),
 		null_false->		 ConvertTo(Int32,
-		null_false->          Load("attnum"))),
+		null_false->          ConstInt32(attnum))),
 		null_false->   ConvertTo(Address, null_false->Load("att")));
 		//
 
 		//off = att_addlength_pointer(off, thisatt->attlen, tp + off);
-		null_false->Store("off",
-		null_false->   ConvertTo(Int32,
-		     att_addlength_pointer_cal(null_false,
+		att_addlength_pointer_cal(null_false,
 		null_false->         ConvertTo(Int32,
-		null_false->		      Load("off")),
-		null_false->         LoadIndirect("FormData_pg_attribute", "attlen",
-		null_false->            Load("thisatt")),
+		null_false->		      Load("off")), thisatt->attlen,
 		null_false->         Add(
 		null_false->            Load("tp1"),
 		null_false->			  ConvertTo(Int32,
-		null_false->               Load("off")))          )));
+		null_false->               Load("off"))),
+									 "offset");
+
+		null_false->Store("off",
+		null_false->   ConvertTo(Int32,
+		null_false->Load("offset")     ));
 
 		/* can't use attcacheoff anymore */
 
-		OMR::JitBuilder::IlBuilder *thisatt_attlen_match = NULL;
-		null_false->IfThen(&thisatt_attlen_match,
-		null_false->   LessOrEqualTo(
-		null_false->      ConvertTo(Int32,
-		null_false->         LoadIndirect("FormData_pg_attribute", "attlen",
-		null_false->            Load("thisatt"))),
-		null_false->      ConstInt32(0)));
-
+		if (thisatt->attlen <= 0)
 		{
-		//slow = true;
-		thisatt_attlen_match->Store("slow",
-		thisatt_attlen_match->   ConvertTo(bool_type,
-		thisatt_attlen_match->      ConstInt16(true)));
-
+			Store("slow",
+			   ConvertTo(bool_type,
+			      ConstInt16(true)));
 		}
 
-		loop->Store("attnum",
-		loop->   Add(
-		loop->      Load("attnum"),
-		loop->      ConstInt32(1)));
 	}
 
 	/*
@@ -1423,7 +1242,7 @@ slot_compile_deform::buildIL()
 	//slot_opt->tts_nvalid = attnum;
 	StoreIndirect("TupleTableSlot", "tts_nvalid",
 	   Load("slot"),
-	   ConvertTo(Int16, Load("attnum")));
+	   ConvertTo(Int16, ConstInt32(attnum)));
 
 	//*off_opt = off;
 	StoreAt(
@@ -1461,7 +1280,6 @@ slot_compile_deform::buildIL()
 	slow_final_match_else->      ConstInt16(~TTS_FLAG_SLOW)));
 
 	}
-	//indexer =0;
 
    Return();
    return true;
@@ -2243,11 +2061,11 @@ extern "C" {
 PG_MODULE_MAGIC;
 
 /*function to compile tuple deformation Jit code*/
-OMRJIT_slot_deformFunctionType * omr_compile(){
+OMRJIT_slot_deformFunctionType * omr_compile(int32_t natts, TupleDesc tupleDesc, TupleTableSlot *slot){
 
 	StructTypeDictionary joinmethodTypes;
 
-	slot_compile_deform method(&joinmethodTypes);
+	slot_compile_deform method(&joinmethodTypes, natts, tupleDesc, slot);
 	void *entry=0;
 	int32_t rc = compileMethodBuilder(&method, &entry);
 
@@ -2391,7 +2209,7 @@ float8_pl_FunctionType * float8_add_func(){
 void omr_tuple_deform(int32_t natts, TupleTableSlot *slot, HeapTuple tuple, uint32 *offp)
 {
 
-	slot_deform(natts, slot, tuple, offp);;
+	/*slot_deform(natts, slot, tuple, offp);*/
 }
 
 }
