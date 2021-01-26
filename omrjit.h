@@ -13,7 +13,9 @@ HeapTuple tuple_opt;
 uint32 *off_opt;
 TupleDesc desc_opt;
 int natts_opt;
-bool is_compiled;
+bool b_is_compiled;
+bool m_is_compiled;
+bool h_is_compiled;
 int attnum_opt;
 bool is_virtual;
 bool agg_flag;
@@ -38,8 +40,8 @@ char	omrjit_path[MAXPGPATH];
 /*typedef int32_t (*omr_eval_compile)();
 omr_eval_compile omreval_compile;*/
 
-typedef void (OMRJIT_slot_deformFunctionType)(int32_t, TupleTableSlot *, HeapTuple , uint32 *);
-typedef OMRJIT_slot_deformFunctionType *(omr_eval_compile)();
+typedef void (OMRJIT_slot_deformFunctionType)(int32_t, TupleTableSlot *, HeapTuple , uint32 *, char *);
+typedef OMRJIT_slot_deformFunctionType *(omr_eval_compile)(int32_t, TupleDesc, TupleTableSlot *);
 omr_eval_compile *omreval_compile;
 OMRJIT_slot_deformFunctionType *slot_deform;
 
@@ -96,6 +98,11 @@ EEOP_ASSIGN_TMP_MAKE_RO_FunctionType *EEOP_ASSIGN_TMP_MAKE_RO_Func;
 /*Expression Compilation*/
 bool omr_jit_compile_expr;
 bool is_omr_expr_compiled;
+
+//compile time eval
+bool omr_byval[30];
+int16 omr_attlen[30];
+int indexer;
 
 
 
