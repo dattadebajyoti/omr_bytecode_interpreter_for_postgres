@@ -4221,12 +4221,14 @@ PostgresMain(int argc, char *argv[],
 	   exit(-1);
 	}*/
 
-	/*is_compiled = false;
-	guaranteed_column_number = -1;*/
+	b_is_compiled = false;
+	m_is_compiled = false;
+	h_is_compiled = false;
+	/*guaranteed_column_number = -1;*/
     //Expression Compilation
 	//if(is_compiled == false){
-		omreval_compile = (omr_eval_compile *)load_external_function(omrjit_path, "omr_compile", true, NULL);
-		slot_deform = (*omreval_compile)();
+		/*omreval_compile = (omr_eval_compile *)load_external_function(omrjit_path, "omr_compile", true, NULL);
+		slot_deform = (*omreval_compile)();*/
 		//is_compiled = true;
 	//}
 
