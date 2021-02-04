@@ -341,7 +341,14 @@ tts_heap_getsomeattrs(TupleTableSlot *slot, int natts)
 		slot_deform = (*omreval_compile)();
 		is_compiled = true;
 	}*/
-	(*slot_deform)(natts, slot, hslot->tuple, &hslot->off);
+	/*if(h_is_compiled == false)
+	{
+		TupleDesc	tupleDesc = slot->tts_tupleDescriptor;
+		omreval_compile = (omr_eval_compile *)load_external_function(omrjit_path, "omr_compile", true, NULL);
+		slot_deform = (*omreval_compile)(natts, tupleDesc, slot);
+		h_is_compiled = true;
+	}*/
+	(*slot_deform)(natts, slot, hslot->tuple, &hslot->off, (char *) hslot->tuple->t_data + hslot->tuple->t_data->t_hoff);
 }
 
 static Datum
@@ -507,7 +514,8 @@ tts_minimal_getsomeattrs(TupleTableSlot *slot, int natts)
 
 	Assert(!TTS_EMPTY(slot));
 
-	//slot_deform_heap_tuple(slot, mslot->tuple, &mslot->off, natts);
+	slot_deform_heap_tuple(slot, mslot->tuple, &mslot->off, natts);
+	//slot_deform_hard_jit(natts, slot, mslot->tuple, &mslot->off, (char *) mslot->tuple->t_data + mslot->tuple->t_data->t_hoff);
 
 	/*if(is_compiled == false){
 
@@ -522,7 +530,14 @@ tts_minimal_getsomeattrs(TupleTableSlot *slot, int natts)
 		slot_deform = (*omreval_compile)();
 		is_compiled = true;
 	}*/
-	(*slot_deform)(natts, slot, mslot->tuple, &mslot->off);
+	/*if(m_is_compiled == false)
+	{
+		TupleDesc	tupleDesc = slot->tts_tupleDescriptor;
+		omreval_compile = (omr_eval_compile *)load_external_function(omrjit_path, "omr_compile", true, NULL);
+		slot_deform = (*omreval_compile)(natts, tupleDesc, slot);
+		m_is_compiled = true;
+	}
+	(*slot_deform)(natts, slot, mslot->tuple, &mslot->off, (char *) mslot->tuple->t_data + mslot->tuple->t_data->t_hoff);*/
 }
 
 static Datum
@@ -711,40 +726,16 @@ tts_buffer_heap_getsomeattrs(TupleTableSlot *slot, int natts)
 
 	//slot_deform_heap_tuple(slot, bslot->base.tuple, &bslot->base.off, natts);
 
-	//TupleDesc	tupleDesc = slot->tts_tupleDescriptor;
+	if(b_is_compiled == false)
+	{
 
-	/*snprintf(omrjit_fetch_path, MAXPGPATH, "%s/%s%s", "/usr/local/pgsql/lib", "omrjit_expr", ".so");
-	omr_fetch_attributes_init = (omrjit_fetch)load_external_function(omrjit_fetch_path, "omr_tuple_deform", true, NULL);
-	omr_fetch_attributes_init(natts, slot, bslot->base.tuple, &bslot->base.off);*/
+		TupleDesc	tupleDesc = slot->tts_tupleDescriptor;
+		//omreval_compile = (omr_eval_compile *)load_external_function(omrjit_path, "omr_compile", true, NULL);
+		slot_deform = (*omreval_compile)(natts, tupleDesc, slot);
+		b_is_compiled = true;
+	}
 
-	//slot_opt = slot;
-	//tuple_opt = bslot->base.tuple;
-	//off_opt = &bslot->base.off;
-	//natts_opt = natts;
-	//attnum = slot->tts_nvalid;
-
-
-	/*slot_opt = slot;
-	natts_opt = natts;
-	attnum_opt = slot->tts_nvalid;
-	natts_opt = natts;
-	desc_opt = slot->tts_tupleDescriptor;
-	tuple_opt = bslot->base.tuple;*/
-	//check if it was already compiled, if not compile
-	/*if(is_compiled == false){
-
-		//slot_opt = slot;
-		//natts_opt = natts;
-		//attnum_opt = slot->tts_nvalid;
-		//natts_opt = natts;
-		//desc_opt = slot->tts_tupleDescriptor;
-		//tuple_opt = bslot->base.tuple;
-
-		omreval_compile = (omr_eval_compile *)load_external_function(omrjit_path, "omr_compile", true, NULL);
-		slot_deform = (*omreval_compile)();
-		is_compiled = true;
-	}*/
-	(*slot_deform)(natts, slot, bslot->base.tuple, &bslot->base.off);
+	(*slot_deform)(natts, slot, bslot->base.tuple, &bslot->base.off, (char *) bslot->base.tuple->t_data + bslot->base.tuple->t_data->t_hoff);
 }
 
 static Datum
@@ -1950,13 +1941,13 @@ slot_getmissingattrs(TupleTableSlot *slot, int startAttNum, int lastAttNum)
 	}
 }
 
+
 /*
  * slot_getsomeattrs_int - workhorse for slot_getsomeattrs()
  */
 void
 slot_getsomeattrs_int(TupleTableSlot *slot, int attnum)
 {
-	
 		/* Check for caller errors */
 		Assert(slot->tts_nvalid < attnum);	/* checked in slot_getsomeattrs */
 		Assert(attnum > 0);
@@ -1967,6 +1958,70 @@ slot_getsomeattrs_int(TupleTableSlot *slot, int attnum)
 		/* Fetch as many attributes as possible from the underlying tuple. */
 		slot->tts_ops->getsomeattrs(slot, attnum);
 
+		/*
+		 * If the underlying tuple doesn't have enough attributes, tuple
+		 * descriptor must have the missing attributes.
+		 */
+		if (unlikely(slot->tts_nvalid < attnum))
+		{
+			slot_getmissingattrs(slot, slot->tts_nvalid, attnum);
+			slot->tts_nvalid = attnum;
+		}
+}
+
+/*
+ * slot_getsomeattrs_int - workhorse for slot_getsomeattrs()
+ */
+void
+slot_getsomeattrs_int1(TupleTableSlot *slot, int attnum, const TupleTableSlotOps *ops)
+{
+		TupleDesc	tupleDesc = slot->tts_tupleDescriptor;
+
+		if(ops == &TTSOpsHeapTuple)
+		{
+			HeapTupleTableSlot *hslot = (HeapTupleTableSlot *) slot;
+
+			Assert(!TTS_EMPTY(slot));
+
+			//slot_deform_heap_tuple(slot, hslot->tuple, &hslot->off, attnum);
+			if(h_is_compiled == false)
+			{
+				slot_deform = (*omreval_compile)(attnum, tupleDesc, slot);
+				h_is_compiled = true;
+			}
+			(*slot_deform)(attnum, slot, hslot->tuple, &hslot->off, (char *) hslot->tuple->t_data + hslot->tuple->t_data->t_hoff);
+		}
+		else if(ops == &TTSOpsMinimalTuple)
+		{
+			MinimalTupleTableSlot *mslot = (MinimalTupleTableSlot *) slot;
+
+			Assert(!TTS_EMPTY(slot));
+			slot_deform_heap_tuple(slot, mslot->tuple, &mslot->off, attnum);
+			/*if(m_is_compiled == false)
+			{
+				slot_deform = (*omreval_compile)(attnum, tupleDesc, slot);
+				m_is_compiled = true;
+			}
+			(*slot_deform)(attnum, slot, mslot->tuple, &mslot->off, (char *) mslot->tuple->t_data + mslot->tuple->t_data->t_hoff);*/
+		}
+		else if(ops == &TTSOpsBufferHeapTuple)
+		{
+			BufferHeapTupleTableSlot *bslot = (BufferHeapTupleTableSlot *) slot;
+
+			Assert(!TTS_EMPTY(slot));
+
+			//slot_deform_heap_tuple(slot, bslot->base.tuple, &bslot->base.off, attnum);
+			if(b_is_compiled == false)
+			{
+				slot_deform = (*omreval_compile)(attnum, tupleDesc, slot/*, ops*/);
+				b_is_compiled = true;
+			}
+			(*slot_deform)(attnum, slot, bslot->base.tuple, &bslot->base.off, (char *) bslot->base.tuple->t_data + bslot->base.tuple->t_data->t_hoff);
+		}
+		else
+		{
+			slot->tts_ops->getsomeattrs(slot, attnum);
+		}
 
 		/*
 		 * If the underlying tuple doesn't have enough attributes, tuple
@@ -1977,7 +2032,6 @@ slot_getsomeattrs_int(TupleTableSlot *slot, int attnum)
 			slot_getmissingattrs(slot, slot->tts_nvalid, attnum);
 			slot->tts_nvalid = attnum;
 		}
-	
 }
 
 /* ----------------------------------------------------------------
