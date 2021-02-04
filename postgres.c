@@ -1392,6 +1392,10 @@ exec_simple_query(const char *query_string)
 
 	debug_query_string = NULL;
 
+	b_is_compiled = false;
+	m_is_compiled = false;
+	h_is_compiled = false;
+	//is_compile_FUNCEXPR_STRICT = false;
 	//shutdown OMR
 	/*omreval_shut = (omr_eval_shutdown)load_external_function(omrjit_path, "omr_shut", true, NULL);
 	omreval_shut();*/
@@ -4214,28 +4218,27 @@ PostgresMain(int argc, char *argv[],
 	provider_init();
 
     omreval_init = (omr_eval_initialize)load_external_function(omrjit_path, "omr_init", true, NULL);
-	/*bool initialized = */omreval_init();
-	/*if (!initialized)
-	{
-	   elog(INFO, "FAIL: could not initialize JIT\n");
-	   exit(-1);
-	}*/
-
-	/*is_compiled = false;
-	guaranteed_column_number = -1;*/
-    //Expression Compilation
-	//if(is_compiled == false){
-		omreval_compile = (omr_eval_compile *)load_external_function(omrjit_path, "omr_compile", true, NULL);
-		slot_deform = (*omreval_compile)();
-		//is_compiled = true;
-	//}
-
-	/*expr_funcexprstrict_compile = (omr_expr_FUNCEXPR_STRICT_compile *)load_external_function(omrjit_path, "EEOP_FUNCEXPR_STRICT_compile_func", true, NULL);
-	FUNCEXPR_STRICT = (*expr_funcexprstrict_compile)();*/
+	omreval_init();
 
 
-	expr_qual_compile = (omr_expr_qual_compile *)load_external_function(omrjit_path, "EEOP_Qual_compile_func", true, NULL);
-	qual_FunctionType = (*expr_qual_compile)();
+	is_compiled = false;
+	b_is_compiled = false;
+	m_is_compiled = false;
+	h_is_compiled = false;
+
+
+	omreval_compile = (omr_eval_compile *)load_external_function(omrjit_path, "omr_compile", true, NULL);
+
+	/*omreval_compile_hard_jit = (omr_eval_compile_hard_jit  *)load_external_function(omrjit_path, "omr_compile_hard_jit", true, NULL);
+	slot_deform_hard_jit = (*omreval_compile_hard_jit)();*/
+
+	/*is_compile_FUNCEXPR_STRICT = false;
+	expr_funcexprstrict_compile = (omr_expr_FUNCEXPR_STRICT_compile *)load_external_function(omrjit_path, "EEOP_FUNCEXPR_STRICT_compile_func", true, NULL);*/
+	//FUNCEXPR_STRICT = (*expr_funcexprstrict_compile)();
+
+
+	/*expr_qual_compile = (omr_expr_qual_compile *)load_external_function(omrjit_path, "EEOP_Qual_compile_func", true, NULL);
+	qual_FunctionType = (*expr_qual_compile)();*/
 
 	/*expr_var_compile = (omr_EEOP_var_compile *)load_external_function(omrjit_path, "EEOP_VAR_compile_func", true, NULL);
 	VAR_FunctionType = (*expr_var_compile)();*/
@@ -4243,17 +4246,17 @@ PostgresMain(int argc, char *argv[],
 	/*expr_ASSIGN_var_compile = (omr_EEOP_ASSIGN_var_compile *)load_external_function(omrjit_path, "EEOP_ASSIGN_VAR_compile_func", true, NULL);
 	ASSIGN_VAR_FunctionType = (*expr_ASSIGN_var_compile)();
 
-	EEOP_NOT_DISTINCT_compile = (omr_EEOP_NOT_DISTINCT_compile *)load_external_function(omrjit_path, "EEOP_NOT_DISTINCT_compile_func", true, NULL);
-	EEOP_NOT_DISTINCT_FUNC = (*EEOP_NOT_DISTINCT_compile)(); //called from 1212
-
 	expr_EEOP_AGGREF_compile = (EEOP_AGGREF_compile *)load_external_function(omrjit_path, "EEOP_AGGREF_compile_func", true, NULL);
 	EEOP_AGGREF_Func = (*expr_EEOP_AGGREF_compile)(); //called from 1498*/
 
-	expr_EEOP_ASSIGN_TMP_MAKE_RO_compile = (EEOP_ASSIGN_TMP_MAKE_RO_compile *)load_external_function(omrjit_path, "EEOP_ASSIGN_TMP_MAKE_RO_compile_func", true, NULL);
-	EEOP_ASSIGN_TMP_MAKE_RO_Func = (*expr_EEOP_ASSIGN_TMP_MAKE_RO_compile)(); //called from 645
+	/*expr_EEOP_ASSIGN_TMP_MAKE_RO_compile = (EEOP_ASSIGN_TMP_MAKE_RO_compile *)load_external_function(omrjit_path, "EEOP_ASSIGN_TMP_MAKE_RO_compile_func", true, NULL);
+	EEOP_ASSIGN_TMP_MAKE_RO_Func = (*expr_EEOP_ASSIGN_TMP_MAKE_RO_compile)(); //called from 645*/
 
 	/*expr_float8_pl_compile = (float8_pl_compile *)load_external_function(omrjit_path, "float8_add_func", true, NULL);
 	float8_omr_add_Func = (*expr_float8_pl_compile)();*/
+
+	/*EEOP_NOT_DISTINCT_compile = (omr_EEOP_NOT_DISTINCT_compile *)load_external_function(omrjit_path, "EEOP_NOT_DISTINCT_compile_func", true, NULL);
+	EEOP_NOT_DISTINCT_FUNC = (*EEOP_NOT_DISTINCT_compile)(); //called from 1212*/
 
 	for (;;)
 	{
