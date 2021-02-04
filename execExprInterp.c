@@ -331,6 +331,7 @@ ExecReadyInterpretedExpr(ExprState *state)
 #endif							/* EEO_USE_COMPUTED_GOTO */
 
 	state->evalfunc_private = (void *) ExecInterpExpr;
+	//state->evalfunc_private = (void *) (*omr_vm);
 }
 
 
@@ -465,6 +466,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 	outerslot = econtext->ecxt_outertuple;
 	scanslot = econtext->ecxt_scantuple;
 
+	const TupleTableSlotOps *tts_ops = op->d.fetch.kind;
+
 #if defined(EEO_USE_COMPUTED_GOTO)
 	EEO_DISPATCH();
 #endif
@@ -481,7 +484,13 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			CheckOpSlotCompatibility(op, innerslot);
 
 			slot_getsomeattrs(innerslot, op->d.fetch.last_var);
-			//slot_getsomeattrs_int(innerslot, op->d.fetch.last_var);
+			//slot_getsomeattrs_int1(innerslot, op->d.fetch.last_var, tts_ops);
+			/*if(is_compiled == false)
+			{
+				slot_deform = (*omreval_compile)(op->d.fetch.last_var, innerslot->tts_tupleDescriptor, innerslot, tts_ops);
+				is_compiled = true;
+			}
+			(*slot_deform)(op->d.fetch.last_var, innerslot);*/
 
 			EEO_NEXT();
 		}
@@ -491,7 +500,13 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			CheckOpSlotCompatibility(op, outerslot);
 
 			slot_getsomeattrs(outerslot, op->d.fetch.last_var);
-			//slot_getsomeattrs_int(outerslot, op->d.fetch.last_var);
+			//slot_getsomeattrs_int1(outerslot, op->d.fetch.last_var, tts_ops);
+			/*if(is_compiled == false)
+			{
+				slot_deform = (*omreval_compile)(op->d.fetch.last_var, outerslot->tts_tupleDescriptor, outerslot, tts_ops);
+				is_compiled = true;
+			}
+			(*slot_deform)(op->d.fetch.last_var, outerslot);*/
 
 			EEO_NEXT();
 		}
@@ -501,7 +516,13 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			CheckOpSlotCompatibility(op, scanslot);
 
 			slot_getsomeattrs(scanslot, op->d.fetch.last_var);
-			//slot_getsomeattrs_int(scanslot, op->d.fetch.last_var);
+			//slot_getsomeattrs_int1(scanslot, op->d.fetch.last_var, tts_ops);
+			/*if(is_compiled == false)
+			{
+				slot_deform = (*omreval_compile)(op->d.fetch.last_var, scanslot->tts_tupleDescriptor, scanslot, tts_ops);
+				is_compiled = true;
+			}
+			(*slot_deform)(op->d.fetch.last_var, scanslot);*/
 
 			EEO_NEXT();
 		}
@@ -644,13 +665,13 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 		{
 			int			resultnum = op->d.assign_tmp.resultnum;
 
-			/*resultslot->tts_isnull[resultnum] = state->resnull;
+			resultslot->tts_isnull[resultnum] = state->resnull;
 			if (!resultslot->tts_isnull[resultnum])
 				resultslot->tts_values[resultnum] =
 					MakeExpandedObjectReadOnlyInternal(state->resvalue);
 			else
-				resultslot->tts_values[resultnum] = state->resvalue;*/
-			EEOP_ASSIGN_TMP_MAKE_RO_Func(resultnum, resultslot, state);
+				resultslot->tts_values[resultnum] = state->resvalue;
+			/*EEOP_ASSIGN_TMP_MAKE_RO_Func(resultnum, resultslot, state);*/
 
 			EEO_NEXT();
 		}
@@ -707,7 +728,12 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 					goto strictfail;
 				}
 			}
-			/*if(FUNCEXPR_STRICT(op->d.func.nargs, fcinfo->args, &op->resnull, &op->resvalue, op->d.func.fn_addr(fcinfo), fcinfo))
+			/*if(!is_compile_FUNCEXPR_STRICT)
+			{
+				FUNCEXPR_STRICT = (*expr_funcexprstrict_compile)(op->d.func.nargs, fcinfo->args);
+				is_compile_FUNCEXPR_STRICT = true;
+			}
+			if(FUNCEXPR_STRICT(&op->resnull, &op->resvalue, op->d.func.fn_addr(fcinfo), fcinfo))
 			{
 				EEO_NEXT();
 			}*/
@@ -888,18 +914,18 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			/* simplified version of BOOL_AND_STEP for use by ExecQual() */
 
 			/* If argument (also result) is false or null ... */
-			/*if (*op->resnull ||
+			if (*op->resnull ||
 				!DatumGetBool(*op->resvalue))
 			{
 				//... bail out early, returning FALSE
 				*op->resnull = false;
 				*op->resvalue = BoolGetDatum(false);
 				EEO_JUMP(op->d.qualexpr.jumpdone);
-			}*/
-			if(qual_FunctionType(&op->resnull, &op->resvalue))
+			}
+			/*if(qual_FunctionType(&op->resnull, &op->resvalue))
 			{
 				EEO_JUMP(op->d.qualexpr.jumpdone);
-			}
+			}*/
 
 			/*
 			 * Otherwise, leave the TRUE value in place, in case this is the
@@ -1780,6 +1806,10 @@ ExecInterpExprStillValid(ExprState *state, ExprContext *econtext, bool *isNull)
 	 * ok anymore, due to schema changes.
 	 */
 	CheckExprStillValid(state, econtext);
+
+	/*omr_bytecode_Interpreter = (omr_vm_compile *)load_external_function(omrjit_path, "omr_expr_compiler", true, NULL);
+	omr_vm = (*omr_bytecode_Interpreter)(state, econtext, isNull);
+	state->evalfunc_private = (void *)omr_vm;*/
 
 	/* skip the check during further executions */
 	state->evalfunc = (ExprStateEvalFunc) state->evalfunc_private;
