@@ -1,0 +1,61 @@
+
+Install postgres-12.5
+
+cd /home/bigdata/
+
+mkdir postgres12.5
+
+cd postgres12.5
+
+wget https://ftp.postgresql.org/pub/source/v12.5/postgresql-12.5.tar.gz
+
+tar xzvf postgresql-12.5.tar.gz
+
+mkdir install
+
+cd postgresql-12.5
+
+./configure --prefix=/home/bigdata/postgres12.5/install
+
+ 
+
+Data folder: /home/bigdata/postgres12.5/install/data
+
+ 
+
+/home/bigdata/postgres12.5/install/bin/initdb -U dbuser /home/bigdata/postgres12.5/install/data
+
+/home/bigdata/postgres12.5/install/bin/pg_ctl -D /home/bigdata/postgres12.5/install/data start
+
+/home/bigdata/postgres12.5/install/bin/createdb -U dbuser testdb
+
+ 
+
+In  /home/bigdata/.bachrc add the following:
+
+export HOME_POSTGRES=$HOME/postgres12.5/install
+
+export PATH=$HOME_POSTGRES/bin:$PATH
+
+export LD_LIBRARY_PATH=$HOME_POSTGRES/lib:$LD_LIBRARY_PATH
+
+export LD_LIBRARY_PATH=/usr/lib:/lib:$LD_LIBRARY_PATH
+
+ 
+
+export PGDATA=$HOME_POSTGRES/data
+
+export PGCLIENTENCODING=LATIN1
+
+ 
+
+Then launch a psql client
+
+psql -U dbuser testdb
+
+
+GOTO ~/project/bin
+/home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/DemoDir DemoDB
+
+env variables for eclipse:
+arguments: --single -s -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
