@@ -1,0 +1,260 @@
+-----------PERF-----------------------
+
+perf_event_open(..., PERF_FLAG_FD_CLOEXEC) failed with unexpected error 13 (Permission denied)
+perf_event_open(..., 0) failed unexpectedly with error 13 (Permission denied)
+Error:
+You may not have permission to collect system-wide stats.
+
+Consider tweaking /proc/sys/kernel/perf_event_paranoid,
+which controls use of the performance events system by
+unprivileged users (without CAP_SYS_ADMIN).
+
+The current value is 3:
+
+  -1: Allow use of (almost) all events by all users
+      Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
+>= 0: Disallow ftrace function tracepoint by users without CAP_SYS_ADMIN
+      Disallow raw tracepoint access by users without CAP_SYS_ADMIN
+>= 1: Disallow CPU event access by users without CAP_SYS_ADMIN
+>= 2: Disallow kernel profiling by users without CAP_SYS_ADMIN
+
+To make this setting permanent, edit /etc/sysctl.conf too, e.g.:
+
+	kernel.perf_event_paranoid = -1
+
+https://superuser.com/questions/980632/run-perf-without-root-rights
+https://wiki.postgresql.org/wiki/Profiling_with_perf
+
+-------------------------------------------------------
+
+
+pg_ctl -D DemoDir1 stop
+psql DemoDB
+pg_ctl -D DemoDir1 start
+
+set jit=on;
+set jit_above_cost=0;
+set jit_inline_above_cost=0;
+set jit_optimize_above_cost=0;
+
+
+create table data1_10000000(time timestamp, city varchar(40), words varchar(40), rand1 int, rand2 float, nor float, uni float, exp float);
+COPY data1_10000000(time, city, words, rand1, rand2, nor, uni, exp) from '/home/debajyoti/data-temp/testing-data/data1_10000000.csv' DELIMITER ',' CSV HEADER;
+select * from data1_clone1 where rand1>=750000; no primary key
+select * from data1_clone2; primary key
+select * from data1_10000000 where rand1>=750000 limit 10;
+select * from data1_10000000 where rand1>=750000;
+select * from data1_clone1 where (3*10 -10) = (2*10*10/10);
+select pg_backend_pid();
+
+create table data1_10000(time timestamp, city varchar(40), words varchar(40), rand1 int, rand2 float, nor float, uni float, exp float);
+COPY data1_10000(time, city, words, rand1, rand2, nor, uni, exp) from '/home/debajyoti/data-temp/testing-data/data1_10000.csv' DELIMITER ',' CSV HEADER;
+select words, count(*) from data1_1000000 group by words;
+
+10000-done
+100000-done
+1000000- not done
+10000000-
+
+
+root@debajyoti-VirtualBox:/home/debajyoti/project/pgsql/contrib/omrjit_expr# 
+export PATH=$HOME/project/bin:$PATH
+export PGDATA=DemoDir1
+
+TR_Options="log=log.dmp,traceIlGen,traceFull"
+
+
+
+debajyoti@debajyoti-VirtualBox:~/project/pgsql$ psql DemoDB
+psql (14devel)
+Type "help" for help.
+
+DemoDB=# \d data1_10000000;
+                     Table "public.data1_10000000"
+ Column |            Type             | Collation | Nullable | Default 
+--------+-----------------------------+-----------+----------+---------
+ time   | timestamp without time zone |           |          | 
+ city   | character varying(40)       |           |          | 
+ words  | character varying(40)       |           |          | 
+ rand1  | integer                     |           |          | 
+ rand2  | double precision            |           |          | 
+ nor    | double precision            |           |          | 
+ uni    | double precision            |           |          | 
+ exp    | double precision            |           |          | 
+
+DemoDB=# 
+
+
+//qual + no jit aggreggation, count
+Time: 3174.546 ms (00:03.175)
+llvm: 3466ms
+omrjit: 3130ms
+
+select words, count(*) from data1_10000000 group by words;
+
+
+
+
+./configure --with-llvm LLVM_CONFIG='/home/debajyoti/vm-project/src/lib/llvm-project/build/bin/llvm-config' --prefix=$HOME/project --enable-depend --enable-cassert --enable-debug --without-readline --without-zlib
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+lineitem:
+create table lineitem(orderkey integer,partkey bigint,suppkey bigint,linenumber integer,quantity integer,extendedprice double precision,discount double precision,tax double precision,returnflag varchar(100),linestatus varchar(100),shipdate date,commitdate date, receiptdate date,shipinstruct varchar(1000),shipmode varchar(500),comment varchar(1000)); 
+
+customer:
+create table customer(custkey integer,name varchar(1000),address varchar(1000),nationkey integer, phone varchar(1000),acctbal double precision,mktsegment varchar(1000),comment varchar(1000));
+copy customer(custkey,name,address,nationkey,phone,acctbal,mktsegment,comment) from '/home/debajyoti/tpch-dbgen/data_scale8/customer.csv' DELIMITER '|' CSV HEADER;
+
+orders:
+create table orders(orderkey integer,custkey integer,orderstatus varchar(1000),totalprice double precision, orderdate varchar(1000),orderpriority varchar(1000),clerk varchar(1000),shippriority integer,comment varchar(1000));
+copy orders(orderkey,custkey,orderstatus,totalprice,orderdate,orderpriority,clerk,shippriority,comment) from '/home/debajyoti/tpch-dbgen/data_scale8/orders.csv' DELIMITER '|' CSV HEADER;
+
+Nation:
+create table nation(nationkey integer,name varchar(1000),regionkey integer,comment varchar(1000));
+copy nation(nationkey,name,regionkey,comment) from '/home/debajyoti/tpch-dbgen/data_scale8/nation.csv' DELIMITER '|' CSV HEADER;
+
+
+//convert to csv from tbl: https://github.com/tvondra/pg_tpch
+https://docs.deistercloud.com/content/Databases.30/TPCH%20Benchmark.90/Data%20generation%20tool.30.xml?embedded=true
+for i in `ls *.tbl`; do sed 's/|$//' $i > ${i/tbl/csv}; echo $i; done;
+
+copy lineitem(orderkey,partkey,suppkey,linenumber,quantity,extendedprice,discount,tax,returnflag,linestatus,shipdate ,commitdate, receiptdate,shipinstruct,shipmode,comment) from '/home/debajyoti/tpch-dbgen/data_scale16/lineitem.csv' DELIMITER '|' CSV HEADER;
+
+select linenumber, count(*) from lineitem100_rows where shipdate <= '1998-12-01' group by linenumber limit 5;
+
+
+1)
+SELECT returnflag, linestatus, sum(quantity) as sum_qty, sum(extendedprice) as sum_base_price,sum(extendedprice * (1 - discount)) as sum_disc_price,sum(extendedprice * (1 - discount) * (1 + tax)) as sum_charge,avg(quantity) as avg_qty,avg(extendedprice) as avg_price,avg(discount) as avg_disc,count(*) as count_order FROM lineitem WHERE shipdate <= '1998-12-01' GROUP BY returnflag,linestatus ORDER BY returnflag,linestatus;
+
+3)select lineitem.orderkey, sum(lineitem.extendedprice*(1 - lineitem.discount)) as revenue,orders.orderdate,orders.shippriority from customer,orders,lineitem where customer.mktsegment='BUILDING' and customer.custkey=orders.custkey and lineitem.orderkey=orders.orderkey and orders.orderdate<'1995-03-15' and lineitem.shipdate>'1995-03-15' group by lineitem.orderkey,orders.orderdate,orders.shippriority order by revenue desc,orders.orderdate;
+
+c-33.83sec
+llvm-31.50sec
+omr-40.55
+
+c-81.49sec
+llvm-68.10sec
+omr-83.23
+
+c-158.58sec
+llvm-146.71sec
+omr-182.79
+
+6)select sum(extendedprice*discount) as revenue from lineitem where shipdate>='1994-01-01' and shipdate< date '1994-01-01'+interval '1 year' and discount between 0.06-0.01 and 0.06+0.01 and quantity<24;
+c-6.60
+llvm-4.17
+omr-14.19
+
+c-12.53sec
+llvm-7.77sec
+omr-28.43
+
+c-26.22sec
+llvm-16.24sec
+omr-58.60
+
+select * from lineitem_scale10 where shipdate <= '1998-12-01' limit 29;
+select words, count(*) from data1_10000 where rand1>=750000 group by words;
+
+select linenumber, count(*) from lineitem_scale2 where shipdate <= '1998-12-01' group by linenumber limit 5;
+
+//q1
+omrjit-4300
+llvm-4900
+notjit: 
+
+
+new:
+execUtils, CreateExecutorState line no. 88
+/optimizer/utils: evaluate_expr() clauses.c 4770
+
+files changed:
+postgres.c, execTuples.c,  jit.c, execExprInterp.c
+
+q1:
+EEOP_SCAN_FETCHSOME    - done
+EEOP_OUTER_FETCHSOME   - done
+EEOP_INNER_FETCHSOME   - done
+EEOP_FUNCEXPR_STRICT   - done
+EEOP_QUAL              - done
+EEOP_ASSIGN_SCAN_VAR   - done
+EEOP_ASSIGN_OUTER_VAR  - done
+EEOP_ASSIGN_INNER_VAR  - done
+EEOP_NOT_DISTINCT      - done
+EEOP_AGGREF            - done
+EEOP_ASSIGN_TMP_MAKE_RO- done
+EEOP_SCAN_VAR          - issue1
+EEOP_INNER_VAR         - issue1
+EEOP_OUTER_VAR         - issue1
+EEOP_ASSIGN_TMP        - 
+
+EEOP_AGG_PLAIN_TRANS_BYVAL
+EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL
+EEOP_AGG_PLAIN_TRANS_STRICT_BYREF
+EEOP_AGG_STRICT_INPUT_CHECK_ARGS
+
+
+#Things to be found:
+branch misses
+iTLB load misses
+
+
+
+
+clauses.c: 4782: exprstate = ExecInitExpr(expr, NULL); 
+
+
+debajyoti@debajyoti-VirtualBox:~/project/bin$ /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/DemoDir DemoDB
+
+PostgreSQL stand-alone backend 14devel
+backend>
+
+
+
+~/project/bin
+/home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/DemoDir DemoDB
+
+
+valgrind --leak-check=full \
+         --show-leak-kinds=all \
+         --track-origins=yes \
+         --verbose \
+         --log-file=valgrind-out.txt \
+         /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
+
+valgrind --tool=callgrind --dump-instr=yes --simulate-cache=yes --collect-jumps=yes --track-origins=yes --verbose --log-file=valgrind-out.txt /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
+
+env variables:
+arguments: --single -s -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
+
+TR_Options="verbose={performance},vlog=<log.dmp>"
+TR_Options="log=log.gvp.dmp,traceIlGen,traceFull,traceGlobalVP"
+TR_Options="limit={*slot_compile_deform},log=log.gvp.dmp,traceIlGen,traceFull,traceGlobalVP" /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
+TR_Options="verbose={compilePerformance},vlog=log.dmp" /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
+
+Scale 2:
+
+Scale4:
+pg_ctl -D tpch_scale4 stop
+
+Scale8:
+
+
+Convert the computed goto into a formal switch-based statement
+Now start making code localization
+
+
+
+
+sudo dnf install popt-dev
+sudo apt-get install libpopt-dev
+sudo apt-get install -y binutils-dev
+sudo apt install systemtap-sdt-dev
+
+perf report -n perf.data
+perf stat -e cycles,instructions,cache-misses
+
+
+
