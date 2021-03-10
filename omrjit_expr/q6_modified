@@ -1,0 +1,145 @@
+INFO:  opcode: 19
+INFO:  opcode: 0
+----------------------
+INFO:  opcode: 19
+INFO:  opcode: 0
+----------------------
+INFO:  opcode: 19
+INFO:  opcode: 0
+----------------------
+INFO:  opcode: 19
+INFO:  opcode: 0
+----------------------
+INFO:  opcode: 19
+INFO:  opcode: 0
+----------------------
+INFO:  opcode: 4
+INFO:  opcode: 7
+INFO:  opcode: 19
+INFO:  opcode: 29
+INFO:  opcode: 7
+INFO:  opcode: 19
+INFO:  opcode: 29
+INFO:  opcode: 7
+INFO:  opcode: 19
+INFO:  opcode: 29
+INFO:  opcode: 7
+INFO:  opcode: 19
+INFO:  opcode: 29
+INFO:  opcode: 7
+INFO:  opcode: 19
+INFO:  opcode: 29
+INFO:  opcode: 0
+----------------------
+INFO:  opcode: 3
+INFO:  opcode: 6
+INFO:  opcode: 6
+INFO:  opcode: 19
+INFO:  opcode: 79
+INFO:  opcode: 82
+INFO:  opcode: 0
+----------------------
+INFO:  opcode: 73
+INFO:  opcode: 15
+INFO:  opcode: 0
+
+select * from lineitem_test where shipdate>='1994-01-01';
+
+
+
+exec the expr:
+PortalRun
+	PortalRunSelect
+		ExecutorRun
+			standard_ExecutorRun
+				ExecutePlan
+					ExecScan (it is called using slot = ExecProcNode(planstate);)
+						ExecQual(ExprState *state, ExprContext *econtext)
+							ExecInterp
+								EEOP_SCAN_FETCHSOME
+								EEOP_SCAN_VAR
+								EEOP_FUNCEXPR_STRICT
+								EEOP_QUAL
+
+
+
+
+
+
+
+
+DemoDB=# set jit=off;
+SET
+DemoDB=# select * from lineitem_test where shipdate>='1994-01-01';
+INFO:  opcode: 4
+INFO:  opcode: 7
+INFO:  opcode: 19
+INFO:  opcode: 29
+INFO:  opcode: 0
+
+INFO:  ----------------------
+
+
+
+
+
+
+
+
+
+q6: all functions:
+date_pl_interval 2071
+numeric_sub 1725
+numeric_float8 1746
+numeric_add 1724
+numeric_float8 1746
+date_ge 1090 - jit
+date_lt_timestamp 2338- jit
+float8ge 298 - jit
+float8le 296 - jit
+int4lt 66 - jit
+
+
+//for all
+date_ge 1090
+date_lt_timestamp 2338
+float8ge 298
+float8le 296
+int4lt 66
+float8pl 218
+float8mul 216
+
+
+select * from lineitem_test where quantity * 2 < quantity / 3;
+INFO:  fbp->funcName---------------------------------------------------------------- int4lt 66
+INFO:  fbp->funcName---------------------------------------------------------------- int4mul 141
+INFO:  fbp->funcName---------------------------------------------------------------- int4div 154
+
+For subtraction: INFO:  fbp->funcName---------------------------------------------------------------- int4mi 181
+INFO:  fbp->funcName---------------------------------------------------------------- float8mi 219
+
+INFO:  fbp->funcName---------------------------------------------------------------- float8pl 218
+
+float8gt 297
+float8ge 298
+float8le 296
+float8lt 295
+
+int4ge 150
+int4gt 147
+int4le 149
+int4lt 66
+
+int4pl 177
+int4mi 181
+int4div 154
+
+float8pl 218
+
+
+
+
+
+
+
+

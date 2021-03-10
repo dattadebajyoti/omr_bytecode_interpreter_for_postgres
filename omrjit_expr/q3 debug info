@@ -1,0 +1,1204 @@
+DemoDB=# select lineitem_test.orderkey, sum(lineitem_test.extendedprice*(1 - lineitem_test.discount)) as revenue,orders_test.orderdate,orders_test.shippriority from customer_test,orders_test,lineitem_test where customer_test.mktsegment='AUTOMOBILE' and customer_test.custkey=orders_test.custkey and lineitem_test.orderkey=orders_test.orderkey and orders_test.orderdate<'1995-03-15' and lineitem_test.shipdate>'1995-03-15' group by lineitem_test.orderkey,orders_test.orderdate,orders_test.shippriority order by revenue desc,orders_test.orderdate;
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 2139062142
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 316
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1597924432
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1466966696
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 67
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1597948832
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1466967176
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 740
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 2
+
+INFO:  opcode: 6
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 2
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 2
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 65
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1753
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1089
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 65
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1753
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1089
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 65
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1753
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1089
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 65
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1753
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1089
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 65
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1753
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1089
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 65
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1753
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1089
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 65
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 1869169767
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 0
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 2
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 0
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1467135644
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 1869169767
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 0
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 2
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 0
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1467135732
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 1869169767
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 0
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 2
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 0
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1467135820
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 1869169767
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 0
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 2
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 0
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1467135908
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 1869169767
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 0
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 2
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 0
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1467135996
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 5
+
+INFO:  opcode: 5
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1
+
+INFO:  opcode: 6
+INFO:      opcode: 49
+
+INFO:  opcode: 49
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue--------------------------------- 1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 1869169767
+
+INFO:  EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- 0
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 73
+
+INFO:  opcode: 73
+INFO:      opcode: 15
+
+INFO:  opcode: 15
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  in EEOP_DONE---------------------------------------------
+
+ orderkey |   revenue   | orderdate  | shippriority 
+----------+-------------+------------+--------------
+        1 | 325033.5816 | 1991-01-01 |            0
+(1 row)
+
+DemoDB=# 
+

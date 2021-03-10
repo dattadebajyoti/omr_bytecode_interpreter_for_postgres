@@ -1,0 +1,566 @@
+exec_simple_query->pg_plan_queries->pg_plan_query
+	planner
+		standard_planner
+			subquery_planner
+				preprocess_expression
+					eval_const_expressions
+						eval_const_expressions_mutator:
+							case AND_EXPR:
+								simplify_and_arguments
+									eval_const_expressions_mutator
+										case T_OpExpr:
+											simplify_function
+												evaluate_expr:pre-eval a const exression
+													ExecInitExpr
+														ExecInitExprRec
+															case T_OpExpr:
+																ExecInitFunc
+																	if (IsA(arg, Const))
+																ExprEvalPushStep(state, &scratch); = EEOP_FUNCEXPR_STRICT  //18
+														ExecReadyExpr(state);
+
+
+
+PortalStart->case PORTAL_ONE_SELECT:ExecutorStart->standard_ExecutorStart->InitPlan->ExecInitNode-> case T_SeqScan:ExecInitSeqScan->
+	ExecInitQual(List *qual, PlanState *parent)
+		ExecInitExprRec
+			case T_OpExpr:
+				ExecInitFunc
+					ExecInitExprRec
+						case T_Var:
+							ExprEvalPushStep(state, &scratch); = EEOP_SCAN_VAR  //6
+				ExprEvalPushStep(state, &scratch); = EEOP_FUNCEXPR_STRICT  //18
+		ExprEvalPushStep(state, &scratch); = EEOP_QUAL   //28
+
+		ExecInitExprRec	
+			case T_OpExpr:
+				ExecInitFunc
+					ExecInitExprRec				
+						case T_Var:
+							ExprEvalPushStep(state, &scratch); = EEOP_SCAN_VAR  //6
+				ExprEvalPushStep(state, &scratch); = EEOP_FUNCEXPR_STRICT  //18
+		ExprEvalPushStep(state, &scratch); = EEOP_QUAL   //28
+
+		ExecInitExprRec	
+			case T_OpExpr:
+				ExecInitFunc
+					ExecInitExprRec				
+						case T_Var:
+							ExprEvalPushStep(state, &scratch); = EEOP_SCAN_VAR  //6
+				ExprEvalPushStep(state, &scratch); = EEOP_FUNCEXPR_STRICT  //18
+		ExprEvalPushStep(state, &scratch); = EEOP_QUAL   //28
+
+		ExecInitExprRec	
+			case T_OpExpr:
+				ExecInitFunc
+					ExecInitExprRec				
+						case T_Var:
+							ExprEvalPushStep(state, &scratch); = EEOP_SCAN_VAR  //6
+				ExprEvalPushStep(state, &scratch); = EEOP_FUNCEXPR_STRICT  //18
+		ExprEvalPushStep(state, &scratch); = EEOP_QUAL   //28	
+
+		ExecInitExprRec	
+			case T_OpExpr:
+				ExecInitFunc
+					ExecInitExprRec				
+						case T_Var:
+							ExprEvalPushStep(state, &scratch); = EEOP_SCAN_VAR  //6
+				ExprEvalPushStep(state, &scratch); = EEOP_FUNCEXPR_STRICT  //18
+		ExprEvalPushStep(state, &scratch); = EEOP_QUAL   //28
+
+		ExprEvalPushStep(state, &scratch); = EEOP_DONE   //0
+
+
+standard_ExecutorRun->
+
+
+
+
+DemoDB=# select sum(extendedprice*discount) from lineitem_test where shipdate>='1994-01-01' and shipdate< date '1997-01-01'+interval '1 year' and discount between 0.06-0.01 and 0.10+0.01 and quantity<40;
+
+ orderkey | partkey | suppkey | linenumber | quantity | extendedprice | discount | tax  | returnflag | linestatus |  shipdate  | commitdate | receiptdate |   shipinstruct   | shipmode |              comme
+nt              
+----------+---------+---------+------------+----------+---------------+----------+------+------------+------------+------------+------------+-------------+------------------+----------+-------------------
+----------------
+        1 |  134619 |   14620 |          2 |       36 |      59529.96 |     0.09 | 0.06 | N          | O          | 1996-04-12 | 1996-02-28 | 1996-04-20  | TAKE BACK RETURN | MAIL     | ly final dependenc
+ies: slyly bold
+        1 |  134619 |   14620 |          2 |       36 |      59529.96 |     0.09 | 0.06 | N          | O          | 1996-04-12 | 1996-02-28 | 1996-04-20  | TAKE BACK RETURN | MAIL     | ly final dependenc
+ies: slyly bold
+        1 |  134619 |   14620 |          2 |       36 |      59529.96 |     0.09 | 0.06 | N          | O          | 1996-04-12 | 1996-02-28 | 1996-04-20  | TAKE BACK RETURN | MAIL     | ly final dependenc
+ies: slyly bold
+        1 |  134619 |   14620 |          2 |       36 |      59529.96 |     0.09 | 0.06 | N          | O          | 1996-04-12 | 1996-02-28 | 1996-04-20  | TAKE BACK RETURN | MAIL     | ly final dependenc
+ies: slyly bold
+        1 |  134619 |   14620 |          2 |       36 |      59529.96 |     0.09 | 0.06 | N          | O          | 1996-04-12 | 1996-02-28 | 1996-04-20  | TAKE BACK RETURN | MAIL     | ly final dependenc
+ies: slyly bold
+        1 |  134619 |   14620 |          2 |       37 |      59529.96 |     0.09 | 0.06 | N          | O          | 1996-04-12 | 1996-02-28 | 1996-04-20  | TAKE BACK RETURN | MAIL     | ly final dependenc
+ies: slyly bold
+(6 rows)
+
+
+INFO:  opcode: 19
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 19
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 19
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 19
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 19
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 3
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+INFO:  opcode: 73
+INFO:      opcode: 15
+
+INFO:  opcode: 15
+INFO:      opcode: 0
+
+INFO:  ----------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
