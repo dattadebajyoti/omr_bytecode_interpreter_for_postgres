@@ -264,6 +264,65 @@ ExecEvalStepOp_func(ExprState *state)
 	elog(INFO,"call state from buildil------------------------------------------------------- %d\n", state->steps_len);
 }
 
+static pg_attribute_always_inline void
+ExecAggPlainTransByVal(AggState *aggstate, AggStatePerTrans pertrans,
+					   AggStatePerGroup pergroup,
+					   ExprContext *aggcontext, int setno)
+{
+	FunctionCallInfo fcinfo = pertrans->transfn_fcinfo;
+	MemoryContext oldContext;
+	Datum		newVal;
+
+	/* cf. select_current_set() */
+	aggstate->curaggcontext = aggcontext;
+	aggstate->current_set = setno;
+
+	/* set up aggstate->curpertrans for AggGetAggref() */
+	aggstate->curpertrans = pertrans;
+
+	/* invoke transition function in per-tuple context */
+	oldContext = MemoryContextSwitchTo(aggstate->tmpcontext->ecxt_per_tuple_memory);
+
+	fcinfo->args[0].value = pergroup->transValue;
+	fcinfo->args[0].isnull = pergroup->transValueIsNull;
+	fcinfo->isnull = false;		/* just in case transfn doesn't set it */
+
+	newVal = FunctionCallInvoke(fcinfo);
+
+	pergroup->transValue = newVal;
+	pergroup->transValueIsNull = fcinfo->isnull;
+
+	MemoryContextSwitchTo(oldContext);
+}
+
+//AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_func
+static void
+AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_func(ExprState *state, ExprEvalStep *op)
+{
+#define AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_func_LINE LINETOSTR(__LINE__)
+	AggState   *aggstate = castNode(AggState, state->parent);
+	AggStatePerTrans pertrans = op->d.agg_trans.pertrans;
+	AggStatePerGroup pergroup =
+	&aggstate->all_pergroups[op->d.agg_trans.setoff][op->d.agg_trans.transno];
+
+	Assert(pertrans->transtypeByVal);
+
+	if (pergroup->noTransValue)
+	{
+		/* If transValue has not yet been initialized, do so now. */
+		ExecAggInitGroup(aggstate, pertrans, pergroup,
+						 op->d.agg_trans.aggcontext);
+		/* copied trans value from input, done this round */
+	}
+	else if (likely(!pergroup->transValueIsNull))
+	{
+		/* invoke transition function, unless prevented by strictness */
+		ExecAggPlainTransByVal(aggstate, pertrans, pergroup,
+							   op->d.agg_trans.aggcontext,
+							   op->d.agg_trans.setno);
+	}
+}
+
 
 }//extern C block ended
 
@@ -951,8 +1010,11 @@ class omrjit_compile_expr : public OMR::JitBuilder::MethodBuilder
    OMR::JitBuilder::IlType *FunctionCallInfoBaseDataStruct;
    OMR::JitBuilder::IlType *pFunctionCallInfoBaseDataStruct;
    OMR::JitBuilder::IlType *dUnion;
+   OMR::JitBuilder::IlType *pAggStatePerGroupData;
 
    OMR::JitBuilder::IlType *pstep_jit;
+   OMR::JitBuilder::IlType *pAggState;
+   OMR::JitBuilder::IlType *pNode;
 
 
 
@@ -1043,6 +1105,10 @@ omrjit_compile_expr::omrjit_compile_expr(OMR::JitBuilder::TypeDictionary *types,
    FunctionCallInfoBaseDataStruct = types->LookupStruct("FunctionCallInfoBaseData");
    pFunctionCallInfoBaseDataStruct = types->PointerTo((char *)"FunctionCallInfoBaseData");
 
+   pAggStatePerGroupData = types->PointerTo((char *)"AggStatePerGroupData");
+   pAggState 	  = types->PointerTo((char *)"AggState");
+   pNode 	  	  = types->PointerTo((char *)"Node");
+
    dUnion = types->LookupUnion("d");
 
    //ExprContext
@@ -1057,6 +1123,15 @@ omrjit_compile_expr::omrjit_compile_expr(OMR::JitBuilder::TypeDictionary *types,
    DefineParameter("state",  pExprState);
    DefineParameter("isnull",  pbool);
 
+   //AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_func
+   DefineFunction((char *)"AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_func",
+                  (char *)__FILE__,
+                  (char *)AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_func_LINE,
+                  (void *)&AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_func,
+				  NoType,
+                  2,
+				  pExprState,
+				  pExprEvalStep);
 
 
    DefineFunction((char *)"t_uint32_func",
@@ -1153,7 +1228,7 @@ omrjit_compile_expr::omrjit_compile_expr(OMR::JitBuilder::TypeDictionary *types,
 				  pStr);
 
    /* Define Return type */
-   DefineReturnType(NoType);
+   //DefineReturnType(NoType);
 
    //att_align_nominal_func
    DefineFunction((char *)"att_addlength_pointer_func",
@@ -1414,21 +1489,17 @@ class StructTypeDictionary : public OMR::JitBuilder::TypeDictionary
 
 	   	   CLOSE_STRUCT(step_jit);*/
 
+	   	   /*Declare  Node*/
+	   	   DEFINE_STRUCT(Node);
 
-	   	   /*Declare  Expression*/
-	   	   OMR::JitBuilder::IlType *ExprStateType = DEFINE_STRUCT(ExprState);
+	   	   DEFINE_FIELD(Node, type, Int32);
 
-	   	   DEFINE_FIELD(ExprState, resnull, d.toIlType<bool>());
-	   	   DEFINE_FIELD(ExprState, resvalue, d.toIlType<Datum>());
-	   	   DEFINE_FIELD(ExprState, resultslot, pTupleTableSlotType);
-	   	   DEFINE_FIELD(ExprState, steps, pExprEvalStepType);
-	   	   DEFINE_FIELD(ExprState, op_resvalue, d.toIlType<Datum *>());
-	   	   DEFINE_FIELD(ExprState, op_resnull, d.toIlType<bool *>());
+	   	   CLOSE_STRUCT(Node);
 
-	   	   CLOSE_STRUCT(ExprState);
 
 	   	   /*Declare  econtext*/
 	   	   OMR::JitBuilder::IlType *ExprContextType = DEFINE_STRUCT(ExprContext);
+	       OMR::JitBuilder::IlType *pExprContextType = PointerTo("ExprContext");
 
 	   	   DEFINE_FIELD(ExprContext, ecxt_scantuple, pTupleTableSlotType);
 	   	   DEFINE_FIELD(ExprContext, ecxt_innertuple, pTupleTableSlotType);
@@ -1440,20 +1511,80 @@ class StructTypeDictionary : public OMR::JitBuilder::TypeDictionary
 	   	   DEFINE_FIELD(ExprContext, domainValue_datum, d.toIlType<Datum>());
 	   	   DEFINE_FIELD(ExprContext, domainValue_isNull, d.toIlType<bool>());
 
+	   	   CLOSE_STRUCT(ExprContext);
+
+	   	   /*Declare  PlanState*/
+	   	   OMR::JitBuilder::IlType *PlanStateType = DEFINE_STRUCT(PlanState);
+	   	   OMR::JitBuilder::IlType *pPlanStateType = PointerTo("PlanState");
+
+	   	   DEFINE_FIELD(PlanState, ps_ResultTupleSlot, pTupleTableSlotType);
+	   	   DEFINE_FIELD(PlanState, ps_ExprContext, 	   pExprContextType);
+
+	   	   CLOSE_STRUCT(PlanState);
+
+	   	   /*Declare  ExprState*/
+	   	   OMR::JitBuilder::IlType *ExprStateType = DEFINE_STRUCT(ExprState);
+
+	   	   DEFINE_FIELD(ExprState, resnull, d.toIlType<bool>());
+	   	   DEFINE_FIELD(ExprState, resvalue, d.toIlType<Datum>());
+	   	   DEFINE_FIELD(ExprState, resultslot, pTupleTableSlotType);
+	   	   DEFINE_FIELD(ExprState, steps, pExprEvalStepType);
+	   	   DEFINE_FIELD(ExprState, op_resvalue, d.toIlType<Datum *>());
+	   	   DEFINE_FIELD(ExprState, op_resnull, d.toIlType<bool *>());
+	   	   DEFINE_FIELD(ExprState, parent, pPlanStateType);
+
 	   	   CLOSE_STRUCT(ExprState);
+
+	   	   //AggStatePerTransData
+	   	   OMR::JitBuilder::IlType *AggStatePerTransDataType = DEFINE_STRUCT(AggStatePerTransData);
+	       OMR::JitBuilder::IlType *pAggStatePerTransData = PointerTo("AggStatePerTransData");
+
+	   	   DEFINE_FIELD(AggStatePerTransData, aggshared, d.toIlType<bool>());
+	   	   DEFINE_FIELD(AggStatePerTransData, numInputs, Int32);
+	   	   DEFINE_FIELD(AggStatePerTransData, numTransInputs, Int32);
+
+	   	   CLOSE_STRUCT(AggStatePerTransData);
+
+	   	   //AggStatePerGroupData
+	   	   OMR::JitBuilder::IlType *AggStatePerGroupDataType = DEFINE_STRUCT(AggStatePerGroupData);
+	       OMR::JitBuilder::IlType *pAggStatePerGroupDataType = PointerTo("AggStatePerGroupData");
+
+	   	   DEFINE_FIELD(AggStatePerGroupData, transValue, d.toIlType<Datum>());
+	   	   DEFINE_FIELD(AggStatePerGroupData, transValueIsNull, d.toIlType<bool>());
+	   	   DEFINE_FIELD(AggStatePerGroupData, noTransValue, d.toIlType<bool>());
+
+	   	   CLOSE_STRUCT(AggStatePerGroupData);
+
+	   	   /*Declare  AggState*/
+	   	   OMR::JitBuilder::IlType *AggStateType = DEFINE_STRUCT(AggState);
+
+	   	   DEFINE_FIELD(AggState, tmpcontext, pExprContextType);
+	   	   DEFINE_FIELD(AggState, curaggcontext, pExprContextType);
+	   	   DEFINE_FIELD(AggState, curpertrans, pAggStatePerTransData);
+	   	   DEFINE_FIELD(AggState, current_set, Int32);
+	   	   DEFINE_FIELD(AggState, all_pergroups, pAggStatePerGroupDataType);
+
+	   	   CLOSE_STRUCT(AggState);
 
       }
    };
 
 
 /******************************BUILDIL Expression compilation**********************************************/
-static const char *const opcode_names[6] = {
-		"EEOP_DONE",
-		"EEOP_OMRJITCOMPILE_EXPR",
-		"EEOP_SCAN_FETCHSOME",
-		"EEOP_SCAN_VAR",
-		"EEOP_FUNCEXPR_STRICT"
-		"EEOP_QUAL"
+static const char *const opcode_names[13] = {
+		"EEOP_DONE_0",
+		"EEOP_OMRJITCOMPILE_EXPR_1",
+		"EEOP_OUTER_FETCHSOME_3",
+		"EEOP_SCAN_FETCHSOME_4",
+		"EEOP_OUTER_VAR_6",
+		"EEOP_SCAN_VAR_7",
+		"EEOP_ASSIGN_TMP_15",
+		"EEOP_FUNCEXPR_STRICT_19",
+		"EEOP_QUAL_29",
+		"EEOP_AGGREF_73",
+		"EEOP_AGG_STRICT_INPUT_CHECK_ARGS_79",
+		"EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_82",
+		"EEOP_AGG_PLAIN_TRANS_BYVAL_84"
 };
 
 bool
@@ -1468,8 +1599,14 @@ omrjit_compile_expr::buildIL()
 	OMR::JitBuilder::IlValue *r_scanslot  		= LoadIndirect("ExprContext", "ecxt_scantuple", r_econtext);
 	OMR::JitBuilder::IlValue *r_innerslot  		= LoadIndirect("ExprContext", "ecxt_innertuple", r_econtext);
 	OMR::JitBuilder::IlValue *r_outerslot  		= LoadIndirect("ExprContext", "ecxt_outertuple", r_econtext);
+	OMR::JitBuilder::IlValue *r_resultslot  	= LoadIndirect("ExprState", "resultslot", r_econtext);
+
 	OMR::JitBuilder::IlValue *r_tts_scanvalues  = LoadIndirect("TupleTableSlot", "tts_values", r_scanslot);
 	OMR::JitBuilder::IlValue *r_tts_scanisnull  = LoadIndirect("TupleTableSlot", "tts_isnull", r_scanslot);
+
+	OMR::JitBuilder::IlValue *r_tts_outervalues = LoadIndirect("TupleTableSlot", "tts_values", r_outerslot);
+	OMR::JitBuilder::IlValue *r_tts_outisnull   = LoadIndirect("TupleTableSlot", "tts_isnull", r_outerslot);
+
 
 	ExprEvalStep *op;
 	OMR::JitBuilder::IlValue *r_op = NULL;
@@ -1521,14 +1658,42 @@ omrjit_compile_expr::buildIL()
 				b->AddFallThroughBuilder(builders[opno+1]);
 				break;
 			}
+
+			case EEOP_OUTER_FETCHSOME:
+			{
+				b->Call("slot_getsomeattrs_int_func", 2, r_outerslot, b->ConstInt32(op->d.fetch.last_var));
+				b->Call("print_func", 2, b->ConstInt32(131313), b->ConstInt32(131313));
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
 			case EEOP_SCAN_FETCHSOME:
 			{
-				//elog(INFO, "in EEOP_SCAN_FETCHSOME-       after-------");
 				b->Call("slot_getsomeattrs_int_func", 2, r_scanslot, b->ConstInt32(op->d.fetch.last_var));
 
 				b->AddFallThroughBuilder(builders[opno+1]);
 				break;
 			}
+
+			case EEOP_OUTER_VAR:
+			{
+				OMR::JitBuilder::IlValue *r_values = b->IndexAt(pDatum, r_tts_outervalues, b->ConstInt32(op->d.var.attnum));
+				OMR::JitBuilder::IlValue *r_nulls  = b->IndexAt(pbool,  r_tts_outisnull, b->ConstInt32(op->d.var.attnum));
+
+				r_resvalue = b->LoadAt(pDatum, r_values);
+				r_resnull  = b->LoadAt(pbool,  r_nulls);
+
+				b->StoreIndirect("ExprEvalStep", "resvalue", b->Load("r_op"), r_values);
+				b->StoreIndirect("ExprEvalStep", "resnull",  b->Load("r_op"),  r_nulls);
+
+				operandIterator++;
+				operandStack[operandIterator] = b->LoadAt(pDatum, b->LoadIndirect("ExprEvalStep", "resvalue", b->Load("r_op")));
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
 			case EEOP_SCAN_VAR:
 			{
 				//elog(INFO, "in EEOP_SCAN_VAR-       after-------");
@@ -1541,7 +1706,7 @@ omrjit_compile_expr::buildIL()
 				b->StoreIndirect("ExprEvalStep", "resvalue", b->Load("r_op"), r_values);
 				b->StoreIndirect("ExprEvalStep", "resnull",  b->Load("r_op"),  r_nulls);
 				op_resvalue = b->LoadAt(pDatum, b->LoadIndirect("ExprEvalStep", "resvalue", b->Load("r_op")));
-				op_resnull  = b->LoadAt(pDatum, b->LoadIndirect("ExprEvalStep", "resnull",  b->Load("r_op")));
+				op_resnull  = b->LoadAt(pbool, b->LoadIndirect("ExprEvalStep", "resnull",  b->Load("r_op")));
 
 				operandIterator++;
 				operandStack[operandIterator] = b->LoadAt(pDatum, b->LoadIndirect("ExprEvalStep", "resvalue", b->Load("r_op")));
@@ -1550,6 +1715,22 @@ omrjit_compile_expr::buildIL()
 				b->AddFallThroughBuilder(builders[opno+1]);
 				break;
 			}
+
+			case EEOP_ASSIGN_TMP:
+			{
+				OMR::JitBuilder::IlValue *r_values = b->LoadIndirect("ExprEvalStep", "resvalue", b->Load("r_op"));
+				OMR::JitBuilder::IlValue *r_nulls  = b->LoadIndirect("ExprEvalStep", "resnull",  b->Load("r_op"));
+
+				b->StoreAt(b->IndexAt(pDatum, b->LoadIndirect("TupleTableSlot", "tts_values", r_resultslot), b->ConstInt32(op->d.assign_tmp.resultnum)), r_values);
+				b->StoreAt(b->IndexAt(pbool,  b->LoadIndirect("TupleTableSlot", "tts_isnull", r_resultslot), b->ConstInt32(op->d.assign_tmp.resultnum)), r_nulls);
+
+				operandIterator++;
+				operandStack[operandIterator] = r_values;
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
 			case EEOP_FUNCEXPR_STRICT:
 			{
 				FunctionCallInfo fcinfo = op->d.func.fcinfo_data;
@@ -1897,6 +2078,30 @@ omrjit_compile_expr::buildIL()
 					//float8pl 218
 					case 218:
 					{
+						operandIterator++;
+						b->Store("operand_temp_gt", b->Add(op_2nd_top, op_top));
+
+						operandStack[operandIterator] = b->Load("operand_temp_gt");
+						break;
+					}
+
+					//float8mi 219
+					case 219:
+					{
+						operandIterator++;
+						b->Store("operand_temp_gt", b->Sub(b->ConvertTo(Float, op_2nd_top), b->ConvertTo(Float, op_top)));
+
+						operandStack[operandIterator] = b->Load("operand_temp_gt");
+						break;
+					}
+
+					//float8mul 216
+					case 216:
+					{
+						operandIterator++;
+						b->Store("operand_temp_gt", b->Mul(op_2nd_top, op_top));
+
+						operandStack[operandIterator] = b->Load("operand_temp_gt");
 						break;
 					}
 
@@ -1939,6 +2144,101 @@ omrjit_compile_expr::buildIL()
 				b->AddFallThroughBuilder(builders[opno+1]);
 				break;
 
+			}
+
+			case EEOP_AGGREF:
+			{
+				OMR::JitBuilder::IlValue *r_ecxt_aggvalues = b->LoadIndirect("ExprContext","ecxt_aggvalues", b->Load("econtext"));
+				OMR::JitBuilder::IlValue *r_ecxt_aggnulls = b->LoadIndirect("ExprContext","ecxt_aggnulls", b->Load("econtext"));
+
+				OMR::JitBuilder::IlValue *r_values = b->IndexAt(pDatum, r_ecxt_aggvalues,  b->ConstInt32(op->d.aggref.aggno));
+				OMR::JitBuilder::IlValue *r_nulls  = b->IndexAt(pbool,  r_ecxt_aggnulls,   b->ConstInt32(op->d.aggref.aggno));
+
+				r_resvalue = b->LoadAt(pDatum, r_values);
+				r_resnull  = b->LoadAt(pbool,  r_nulls);
+
+				b->StoreIndirect("ExprEvalStep", "resvalue", b->Load("r_op"), r_values);
+				b->StoreIndirect("ExprEvalStep", "resnull",  b->Load("r_op"),  r_nulls);
+
+				operandIterator++;
+				operandStack[operandIterator] = b->LoadAt(pDatum, b->LoadIndirect("ExprEvalStep", "resvalue", b->Load("r_op")));
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
+			case EEOP_AGG_STRICT_INPUT_CHECK_ARGS:
+			{
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
+			case EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL:
+			{
+				b->Call("AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_func", 2, b->Load("state"), b->Load("r_op"));
+				/*AggState   *aggstate 		= castNode(AggState, state->parent);
+				AggStatePerTrans pertrans 	= op->d.agg_trans.pertrans;
+				FunctionCallInfo fcinfo 	= pertrans->transfn_fcinfo;
+
+				OMR::JitBuilder::TypeDictionary *types_for_agg;
+				OMR::JitBuilder::IlType *pAggState = types_for_agg->PointerTo((char *)"AggState");
+				OMR::JitBuilder::IlType *pAggStatePerTransData = types_for_agg->PointerTo((char *)"AggStatePerTransData");
+
+				OMR::JitBuilder::IlValue *r_aggstate    = b->ConvertTo(pAggState, b->Load("state"));
+				OMR::JitBuilder::IlValue *r_pertrans    = b->ConvertTo(pAggStatePerTransData, b->Load("pertrans"));//eval after
+				OMR::JitBuilder::IlValue *r_pergroup    = b->ConvertTo(pAggStatePerTransData, b->Load("pergroup"));//eval after
+				OMR::JitBuilder::IlValue *r_aggcontext  = b->ConvertTo(pAggStatePerTransData, b->Load("aggcontext"));//eval after
+
+				//eval after
+				IlBuilder *compare_noTransValue = NULL;
+				b->IfThen(&compare_noTransValue,
+				b->	EqualTo(
+				b->		ConvertTo(Int32,
+				b->			Load("noTransValue")),
+				b->		ConstInt32(1)));
+
+				compare_noTransValue->Call("ExecAggInitGroup", 4, r_aggstate, r_pertrans, r_pergroup, r_aggcontext);
+
+				//eval after
+				IlBuilder *compare_transValueIsNull = NULL;
+				b->IfThen(&compare_transValueIsNull,
+				b->	NotEqualTo(
+				b->		ConvertTo(Int32,
+				b->			Load("transValueIsNull")),
+				b->		ConstInt32(1)));*/
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+			case EEOP_AGG_PLAIN_TRANS_BYVAL:
+			{
+				AggStatePerTrans pertrans = op->d.agg_trans.pertrans;
+				FunctionCallInfo fcinfo = pertrans->transfn_fcinfo;
+				elog(INFO, "EEOP_AGG_PLAIN_TRANS_BYVAL   -------------------    flinfo------------------------------------------------ %d",fcinfo->flinfo->fn_oid);
+				OMR::JitBuilder::IlValue *r_aggstatep = b->ConvertTo(pAggState,
+														b->   ConvertTo(pNode,
+														b->      LoadIndirect("ExprState", "parent",
+														b->         Load("state"))));
+
+				OMR::JitBuilder::IlValue *r_allpergroups = b->LoadIndirect("AggState", "all_pergroups", r_aggstatep);
+
+				OMR::JitBuilder::IlValue *r_pergroup = b->LoadAt(pAggStatePerGroupData, b->IndexAt(pAggStatePerGroupData,
+													   b->   IndexAt(pAggStatePerGroupData, r_allpergroups,
+													   b->      ConstInt32(op->d.agg_trans.setoff)),
+													   b->   ConstInt32(op->d.agg_trans.transno)));
+				b->Call("print_func",2, b->ConvertTo(Int32, b->LoadIndirect("AggStatePerGroupData","transValue",r_pergroup)), operandStack[operandIterator]);
+
+				OMR::JitBuilder::IlValue *newValue = b->Add(b->LoadIndirect("AggStatePerGroupData", "transValue", r_pergroup), operandStack[operandIterator]);
+
+				operandStack[operandIterator] = newValue;
+
+				b->StoreIndirect("AggStatePerGroupData", "transValue", r_pergroup, newValue);
+
+				b->Call("print_func",2, b->ConvertTo(Int32, b->LoadIndirect("AggStatePerGroupData", "transValue", r_pergroup)), newValue);
+				//StoreIndirect("AggStatePerGroup", "transValueIsNull", r_pergroup, Load("nullValue"));
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
 			}
 		}
 
