@@ -214,6 +214,17 @@ static int32_t att_align_pointer_func(int32_t cur_offset, char attalign, int32_t
 }
 
 static void
+slot_getsomeattrs_int_func_v1(TupleTableSlot *slot, int32_t  attnum)
+{
+#define slot_getsomeattrs_int_func_v1_LINE LINETOSTR(__LINE__)
+
+	slot_getmissingattrs(slot, slot->tts_nvalid, attnum);
+	slot->tts_nvalid = attnum;
+
+}
+
+
+static void
 slot_getsomeattrs_int_func(TupleTableSlot *slot, int32_t  attnum)
 {
 #define slot_getsomeattrs_int_func_LINE LINETOSTR(__LINE__)
@@ -325,6 +336,8 @@ AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_func(ExprState *state, ExprEvalStep *op)
 
 
 }//extern C block ended
+
+
 
 
 /****************Define class******************/
@@ -948,6 +961,7 @@ slot_compile_deform::buildIL()
 
 /*End*/
 
+
 /****************Define class******************/
 
 class omrjit_compile_expr : public OMR::JitBuilder::MethodBuilder
@@ -971,6 +985,7 @@ class omrjit_compile_expr : public OMR::JitBuilder::MethodBuilder
    OMR::JitBuilder::IlType *int16_rep;
    OMR::JitBuilder::IlType *str_rep;
    OMR::JitBuilder::IlType *puint8;
+   OMR::JitBuilder::IlType *pFloat;
 
    OMR::JitBuilder::IlType *StructTypeContext;
    OMR::JitBuilder::IlType *pStructTypeContext;
@@ -1015,6 +1030,9 @@ class omrjit_compile_expr : public OMR::JitBuilder::MethodBuilder
    OMR::JitBuilder::IlType *pstep_jit;
    OMR::JitBuilder::IlType *pAggState;
    OMR::JitBuilder::IlType *pNode;
+
+   OMR::JitBuilder::IlType *BufferHeapTupleTableSlotType;
+   OMR::JitBuilder::IlType *pBufferHeapTupleTableSlotType;
 
 
 
@@ -1071,14 +1089,14 @@ omrjit_compile_expr::omrjit_compile_expr(OMR::JitBuilder::TypeDictionary *types,
    int32_rep = types->PointerTo(pInt32);
    int16_rep = types->PointerTo(pInt16);
    str_rep   = types->PointerTo(pStr);
-   pAddress = types->PointerTo(Address);
+   pAddress  = types->PointerTo(Address);
+   pFloat    = types->toIlType<float8>();
 
    this->state = state;
    this->resultslot = resultslot;
    this->innerslot = innerslot;
    this->outerslot = outerslot;
    this->scanslot = scanslot;
-
 
    FormData_pg_attribute      = types->LookupStruct("FormData_pg_attribute");
    pFormData_pg_attribute     = types->PointerTo((char *)"FormData_pg_attribute");
@@ -1092,6 +1110,9 @@ omrjit_compile_expr::omrjit_compile_expr(OMR::JitBuilder::TypeDictionary *types,
 
    HeapTuple      = types->LookupStruct("HeapTupleData");
    pHeapTuple     = types->PointerTo(HeapTuple);
+
+   BufferHeapTupleTableSlotType = types->LookupStruct("BufferHeapTupleTableSlot");
+   pBufferHeapTupleTableSlotType = types->PointerTo((char *)"BufferHeapTupleTableSlot");
 
    HeapTupleHeaderData      = types->LookupStruct("HeapTupleHeaderData");
    pHeapTupleHeaderData     = types->PointerTo((char *)"HeapTupleHeaderData");
@@ -1273,6 +1294,15 @@ omrjit_compile_expr::omrjit_compile_expr(OMR::JitBuilder::TypeDictionary *types,
 				  pTupleTableSlot,
 				  Int32);
 
+   DefineFunction((char *)"slot_getsomeattrs_int_func_v1",
+                  (char *)__FILE__,
+                  (char *)slot_getsomeattrs_int_func_v1_LINE,
+                  (void *)&slot_getsomeattrs_int_func_v1,
+				  NoType,
+                  2,
+				  pTupleTableSlot,
+				  Int32);
+
    //EEOP_SCAN_VAR_func
    DefineFunction((char *)"EEOP_SCAN_VAR_func",
                   (char *)__FILE__,
@@ -1291,6 +1321,16 @@ omrjit_compile_expr::omrjit_compile_expr(OMR::JitBuilder::TypeDictionary *types,
 				  NoType,
                   1,
 				  pExprState);
+
+   //
+   //MakeExpandedObjectReadOnlyInternal_func
+   DefineFunction((char *)"MakeExpandedObjectReadOnlyInternal_func",
+                  (char *)__FILE__,
+                  (char *)MakeExpandedObjectReadOnlyInternal_func_LINE,
+                  (void *)&MakeExpandedObjectReadOnlyInternal_func,
+				  Address,
+                  1,
+				  Address);
 
    /* Define Return type */
    DefineReturnType(Address);
@@ -1357,6 +1397,7 @@ class StructTypeDictionary : public OMR::JitBuilder::TypeDictionary
 
 	   	   /****Declare HeapTupleData*********/
 	   	   DefineStruct("HeapTupleData");
+	   	   OMR::JitBuilder::IlType *pHeapTupleDataType = PointerTo("HeapTupleData");
 
 	   	   DefineField("HeapTupleData", "t_len", Int32);
 	   	   DefineField("HeapTupleData", "t_self", ItemPointerDataType);
@@ -1566,25 +1607,48 @@ class StructTypeDictionary : public OMR::JitBuilder::TypeDictionary
 
 	   	   CLOSE_STRUCT(AggState);
 
+	   	   //HeapTupleTableSlot
+	   	   DEFINE_STRUCT(HeapTupleTableSlot);
+	       OMR::JitBuilder::IlType *pHeapTupleTableSlotType = PointerTo("HeapTupleTableSlot");
+
+	   	   DEFINE_FIELD(HeapTupleTableSlot, tuple, pHeapTupleDataType);
+	   	   DEFINE_FIELD(HeapTupleTableSlot, off, Int32);
+
+	   	   CLOSE_STRUCT(HeapTupleTableSlot);
+
+	   	   //BufferHeapTupleTableSlot
+	   	   DEFINE_STRUCT(BufferHeapTupleTableSlot);
+
+	   	   DEFINE_FIELD(BufferHeapTupleTableSlot, base, pHeapTupleTableSlotType);
+
+	   	   CLOSE_STRUCT(BufferHeapTupleTableSlot);
       }
    };
 
 
+
 /******************************BUILDIL Expression compilation**********************************************/
-static const char *const opcode_names[13] = {
+static const char *const opcode_names[20] = {
 		"EEOP_DONE_0",
 		"EEOP_OMRJITCOMPILE_EXPR_1",
+		"EEOP_INNER_FETCHSOME_2",
 		"EEOP_OUTER_FETCHSOME_3",
 		"EEOP_SCAN_FETCHSOME_4",
+		"EEOP_INNER_VAR_5",
 		"EEOP_OUTER_VAR_6",
 		"EEOP_SCAN_VAR_7",
+		"EEOP_ASSIGN_INNER_VAR_12",
+		"EEOP_ASSIGN_OUTER_VAR_13",
+		"EEOP_ASSIGN_SCAN_VAR_14",
 		"EEOP_ASSIGN_TMP_15",
+		"EEOP_ASSIGN_TMP_MAKE_RO_16",
 		"EEOP_FUNCEXPR_STRICT_19",
 		"EEOP_QUAL_29",
 		"EEOP_AGGREF_73",
 		"EEOP_AGG_STRICT_INPUT_CHECK_ARGS_79",
 		"EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_82",
-		"EEOP_AGG_PLAIN_TRANS_BYVAL_84"
+		"EEOP_AGG_PLAIN_TRANS_BYVAL_84",
+		"EEOP_AGG_PLAIN_TRANS_STRICT_BYREF_86"
 };
 
 bool
@@ -1599,13 +1663,16 @@ omrjit_compile_expr::buildIL()
 	OMR::JitBuilder::IlValue *r_scanslot  		= LoadIndirect("ExprContext", "ecxt_scantuple", r_econtext);
 	OMR::JitBuilder::IlValue *r_innerslot  		= LoadIndirect("ExprContext", "ecxt_innertuple", r_econtext);
 	OMR::JitBuilder::IlValue *r_outerslot  		= LoadIndirect("ExprContext", "ecxt_outertuple", r_econtext);
-	OMR::JitBuilder::IlValue *r_resultslot  	= LoadIndirect("ExprState", "resultslot", r_econtext);
+	OMR::JitBuilder::IlValue *r_resultslot  	= LoadIndirect("ExprState", "resultslot", Load("state"));
 
 	OMR::JitBuilder::IlValue *r_tts_scanvalues  = LoadIndirect("TupleTableSlot", "tts_values", r_scanslot);
 	OMR::JitBuilder::IlValue *r_tts_scanisnull  = LoadIndirect("TupleTableSlot", "tts_isnull", r_scanslot);
 
 	OMR::JitBuilder::IlValue *r_tts_outervalues = LoadIndirect("TupleTableSlot", "tts_values", r_outerslot);
 	OMR::JitBuilder::IlValue *r_tts_outisnull   = LoadIndirect("TupleTableSlot", "tts_isnull", r_outerslot);
+
+	OMR::JitBuilder::IlValue *r_tts_innervalues = LoadIndirect("TupleTableSlot", "tts_values", r_innerslot);
+	OMR::JitBuilder::IlValue *r_tts_innerisnull   = LoadIndirect("TupleTableSlot", "tts_isnull", r_innerslot);
 
 
 	ExprEvalStep *op;
@@ -1659,6 +1726,14 @@ omrjit_compile_expr::buildIL()
 				break;
 			}
 
+			case EEOP_INNER_FETCHSOME:
+			{
+				b->Call("slot_getsomeattrs_int_func", 2, r_innerslot, b->ConstInt32(op->d.fetch.last_var));
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
 			case EEOP_OUTER_FETCHSOME:
 			{
 				b->Call("slot_getsomeattrs_int_func", 2, r_outerslot, b->ConstInt32(op->d.fetch.last_var));
@@ -1670,7 +1745,26 @@ omrjit_compile_expr::buildIL()
 
 			case EEOP_SCAN_FETCHSOME:
 			{
+				//Call to dynamic c-func for getsomeattrs
 				b->Call("slot_getsomeattrs_int_func", 2, r_scanslot, b->ConstInt32(op->d.fetch.last_var));
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
+			case EEOP_INNER_VAR:
+			{
+				OMR::JitBuilder::IlValue *r_values = b->IndexAt(pDatum, r_tts_innervalues, b->ConstInt32(op->d.var.attnum));
+				OMR::JitBuilder::IlValue *r_nulls  = b->IndexAt(pbool,  r_tts_innerisnull, b->ConstInt32(op->d.var.attnum));
+
+				r_resvalue = b->LoadAt(pDatum, r_values);
+				r_resnull  = b->LoadAt(pbool,  r_nulls);
+
+				b->StoreIndirect("ExprEvalStep", "resvalue", b->Load("r_op"), r_values);
+				b->StoreIndirect("ExprEvalStep", "resnull",  b->Load("r_op"),  r_nulls);
+
+				operandIterator++;
+				operandStack[operandIterator] = b->LoadAt(pDatum, b->LoadIndirect("ExprEvalStep", "resvalue", b->Load("r_op")));
 
 				b->AddFallThroughBuilder(builders[opno+1]);
 				break;
@@ -1716,16 +1810,115 @@ omrjit_compile_expr::buildIL()
 				break;
 			}
 
+			case EEOP_ASSIGN_INNER_VAR:
+			{
+				int32_t			resultnum = op->d.assign_var.resultnum;
+				int32_t			attnum = op->d.assign_var.attnum;
+
+				OMR::JitBuilder::IlValue *r_values = b->IndexAt(pDatum, b->LoadIndirect("TupleTableSlot", "tts_values", r_innerslot), b->ConstInt32(attnum));
+				OMR::JitBuilder::IlValue *r_nulls  = b->IndexAt(pbool,  b->LoadIndirect("TupleTableSlot", "tts_isnull", r_innerslot), b->ConstInt32(attnum));
+
+				b->StoreAt(b->IndexAt(pDatum, b->LoadIndirect("TupleTableSlot", "tts_values", r_resultslot), b->ConstInt32(resultnum)), r_values);
+				b->StoreAt(b->IndexAt(pbool,  b->LoadIndirect("TupleTableSlot", "tts_isnull", r_resultslot), b->ConstInt32(resultnum)), r_nulls);
+
+				operandIterator++;
+				operandStack[operandIterator] = r_values;
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
+			case EEOP_ASSIGN_OUTER_VAR:
+			{
+				int32_t			resultnum = op->d.assign_var.resultnum;
+				int32_t			attnum = op->d.assign_var.attnum;
+
+				OMR::JitBuilder::IlValue *r_values = b->IndexAt(pDatum, b->LoadIndirect("TupleTableSlot", "tts_values", r_outerslot), b->ConstInt32(attnum));
+				OMR::JitBuilder::IlValue *r_nulls  = b->IndexAt(pbool,  b->LoadIndirect("TupleTableSlot", "tts_isnull", r_outerslot), b->ConstInt32(attnum));
+
+				b->StoreAt(b->IndexAt(pDatum, b->LoadIndirect("TupleTableSlot", "tts_values", r_resultslot), b->ConstInt32(resultnum)), r_values);
+				b->StoreAt(b->IndexAt(pbool,  b->LoadIndirect("TupleTableSlot", "tts_isnull", r_resultslot), b->ConstInt32(resultnum)), r_nulls);
+
+				operandIterator++;
+				operandStack[operandIterator] = r_values;
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
+			case EEOP_ASSIGN_SCAN_VAR:
+			{
+				int32_t			resultnum = op->d.assign_var.resultnum;
+				int32_t			attnum    = op->d.assign_var.attnum;
+
+				OMR::JitBuilder::IlValue *r_values = b->IndexAt(pDatum, b->LoadIndirect("TupleTableSlot", "tts_values", r_scanslot), b->ConstInt32(attnum));
+				OMR::JitBuilder::IlValue *r_nulls  = b->IndexAt(pbool,  b->LoadIndirect("TupleTableSlot", "tts_isnull", r_scanslot), b->ConstInt32(attnum));
+
+				b->StoreAt(b->IndexAt(pDatum, b->LoadIndirect("TupleTableSlot", "tts_values", r_resultslot), b->ConstInt32(resultnum)),
+						b->LoadAt(pDatum, r_values));
+				b->StoreAt(b->IndexAt(pbool,  b->LoadIndirect("TupleTableSlot", "tts_isnull", r_resultslot), b->ConstInt32(resultnum)),
+						b->LoadAt(pbool, r_nulls));
+
+				/*operandIterator++;
+				operandStack[operandIterator] = r_values;*/
+				b->Call("print_func",2, b->ConstInt32(202020), b->ConstInt32(202020));
+				b->Call("print_func",2, b->ConstInt32(attnum), b->LoadAt(pDatum, r_values));
+				b->Call("print_func",2, b->ConstInt32(resultnum),
+						b->LoadAt(pDatum, b->IndexAt(pDatum,b->LoadIndirect("TupleTableSlot", "tts_values", r_resultslot),b->ConstInt32(resultnum))));
+				b->Call("print_func",2, b->ConstInt32(202020), b->ConstInt32(202020));
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
 			case EEOP_ASSIGN_TMP:
 			{
-				OMR::JitBuilder::IlValue *r_values = b->LoadIndirect("ExprEvalStep", "resvalue", b->Load("r_op"));
-				OMR::JitBuilder::IlValue *r_nulls  = b->LoadIndirect("ExprEvalStep", "resnull",  b->Load("r_op"));
+				b->StoreIndirect("ExprState", "resvalue", b->Load("state"), operandStack[operandIterator]);
+				OMR::JitBuilder::IlValue *r_values = b->LoadIndirect("ExprState", "resvalue", b->Load("state"));
+				OMR::JitBuilder::IlValue *r_nulls  = b->LoadIndirect("ExprState", "resnull",  b->Load("state"));
 
 				b->StoreAt(b->IndexAt(pDatum, b->LoadIndirect("TupleTableSlot", "tts_values", r_resultslot), b->ConstInt32(op->d.assign_tmp.resultnum)), r_values);
 				b->StoreAt(b->IndexAt(pbool,  b->LoadIndirect("TupleTableSlot", "tts_isnull", r_resultslot), b->ConstInt32(op->d.assign_tmp.resultnum)), r_nulls);
 
-				operandIterator++;
-				operandStack[operandIterator] = r_values;
+				/*b->Call("print_func",2, b->ConstInt32(202020), b->ConstInt32(202020));
+				b->Call("print_func",2, b->ConstInt32(202020), operandStack[operandIterator]);
+				b->Call("print_func",2, b->ConstInt32(202020), b->ConstInt32(202020));*/
+
+				b->AddFallThroughBuilder(builders[opno+1]);
+				break;
+			}
+
+			case EEOP_ASSIGN_TMP_MAKE_RO:
+			{
+				int32_t			resultnum = op->d.assign_tmp.resultnum;
+
+				//evaluate the nulls
+				OMR::JitBuilder::IlValue *r_nulls  = b->LoadIndirect("ExprState", "resnull", b->Load("state"));
+				b->StoreAt(b->IndexAt(pbool,  b->LoadIndirect("TupleTableSlot", "tts_isnull", r_resultslot), b->ConstInt32(resultnum)), r_nulls);
+
+				//evaluate the resvalue
+				OMR::JitBuilder::IlValue *r_values = NULL;
+
+				IlBuilder *check_isnull = NULL;
+				IlBuilder *check_isnull_else = NULL;
+				b->IfThenElse(&check_isnull, &check_isnull_else,
+				b->	  EqualTo(
+				b->	     LoadIndirect("TupleTableSlot", "tts_isnull", r_resultslot),
+				b->      ConstInt16(0)));
+
+				r_values =
+				check_isnull->Call("MakeExpandedObjectReadOnlyInternal_func",1,
+				check_isnull->	 LoadIndirect("ExprState", "resvalue",
+				check_isnull->		Load("state")));
+
+				r_values = check_isnull_else->LoadIndirect("ExprState", "resvalue",
+						   check_isnull_else->   Load("state"));
+
+				check_isnull_else->StoreAt(
+				check_isnull_else->   IndexAt(pDatum,
+				check_isnull_else->	  	 LoadIndirect("TupleTableSlot", "tts_values", r_resultslot),
+				check_isnull_else->		 ConstInt32(resultnum)),
+									  r_values);
 
 				b->AddFallThroughBuilder(builders[opno+1]);
 				break;
@@ -2099,7 +2292,7 @@ omrjit_compile_expr::buildIL()
 					case 216:
 					{
 						operandIterator++;
-						b->Store("operand_temp_gt", b->Mul(op_2nd_top, op_top));
+						b->Store("operand_temp_gt", b->Mul(b->ConvertTo(Int64, op_2nd_top), b->ConvertTo(Int64, op_top)));
 
 						operandStack[operandIterator] = b->Load("operand_temp_gt");
 						break;
@@ -2163,6 +2356,10 @@ omrjit_compile_expr::buildIL()
 				operandIterator++;
 				operandStack[operandIterator] = b->LoadAt(pDatum, b->LoadIndirect("ExprEvalStep", "resvalue", b->Load("r_op")));
 
+				b->Call("print_func",2, b->ConstInt32(1010101), b->ConstInt32(1010101));
+				b->Call("print_func",2, r_resvalue, operandStack[operandIterator]);
+				b->Call("print_func",2, b->ConstInt32(1010101), b->ConstInt32(1010101));
+
 				b->AddFallThroughBuilder(builders[opno+1]);
 				break;
 			}
@@ -2174,43 +2371,9 @@ omrjit_compile_expr::buildIL()
 			}
 
 			case EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL:
-			{
-				b->Call("AGG_PLAIN_TRANS_INIT_STRICT_BYVAL_func", 2, b->Load("state"), b->Load("r_op"));
-				/*AggState   *aggstate 		= castNode(AggState, state->parent);
-				AggStatePerTrans pertrans 	= op->d.agg_trans.pertrans;
-				FunctionCallInfo fcinfo 	= pertrans->transfn_fcinfo;
-
-				OMR::JitBuilder::TypeDictionary *types_for_agg;
-				OMR::JitBuilder::IlType *pAggState = types_for_agg->PointerTo((char *)"AggState");
-				OMR::JitBuilder::IlType *pAggStatePerTransData = types_for_agg->PointerTo((char *)"AggStatePerTransData");
-
-				OMR::JitBuilder::IlValue *r_aggstate    = b->ConvertTo(pAggState, b->Load("state"));
-				OMR::JitBuilder::IlValue *r_pertrans    = b->ConvertTo(pAggStatePerTransData, b->Load("pertrans"));//eval after
-				OMR::JitBuilder::IlValue *r_pergroup    = b->ConvertTo(pAggStatePerTransData, b->Load("pergroup"));//eval after
-				OMR::JitBuilder::IlValue *r_aggcontext  = b->ConvertTo(pAggStatePerTransData, b->Load("aggcontext"));//eval after
-
-				//eval after
-				IlBuilder *compare_noTransValue = NULL;
-				b->IfThen(&compare_noTransValue,
-				b->	EqualTo(
-				b->		ConvertTo(Int32,
-				b->			Load("noTransValue")),
-				b->		ConstInt32(1)));
-
-				compare_noTransValue->Call("ExecAggInitGroup", 4, r_aggstate, r_pertrans, r_pergroup, r_aggcontext);
-
-				//eval after
-				IlBuilder *compare_transValueIsNull = NULL;
-				b->IfThen(&compare_transValueIsNull,
-				b->	NotEqualTo(
-				b->		ConvertTo(Int32,
-				b->			Load("transValueIsNull")),
-				b->		ConstInt32(1)));*/
-
-				b->AddFallThroughBuilder(builders[opno+1]);
-				break;
-			}
+			case EEOP_AGG_PLAIN_TRANS_STRICT_BYVAL:
 			case EEOP_AGG_PLAIN_TRANS_BYVAL:
+			case EEOP_AGG_PLAIN_TRANS_STRICT_BYREF:
 			{
 				AggStatePerTrans pertrans = op->d.agg_trans.pertrans;
 				FunctionCallInfo fcinfo = pertrans->transfn_fcinfo;
@@ -2228,14 +2391,66 @@ omrjit_compile_expr::buildIL()
 													   b->   ConstInt32(op->d.agg_trans.transno)));
 				b->Call("print_func",2, b->ConvertTo(Int32, b->LoadIndirect("AggStatePerGroupData","transValue",r_pergroup)), operandStack[operandIterator]);
 
-				OMR::JitBuilder::IlValue *newValue = b->Add(b->LoadIndirect("AggStatePerGroupData", "transValue", r_pergroup), operandStack[operandIterator]);
+				OMR::JitBuilder::IlValue *newValue = NULL/*b->Add(b->LoadIndirect("AggStatePerGroupData", "transValue", r_pergroup), operandStack[operandIterator])*/;
+
+				//Call the aggregation function
+				int32_t func_oid = fcinfo->flinfo->fn_oid;
+				switch(func_oid)
+				{
+					//int4_sum
+					case 1841:
+					{
+						newValue = b->Add(
+								   b->   LoadIndirect("AggStatePerGroupData", "transValue", r_pergroup),
+								         operandStack[operandIterator]);
+						break;
+					}
+
+					//float8pl
+					case 218:
+					{
+						newValue = b->Add(
+								   b->   ConvertTo(Int64,
+								   b->      LoadIndirect("AggStatePerGroupData", "transValue", r_pergroup)),
+								   b->   ConvertTo(Int64, operandStack[operandIterator]));
+						break;
+					}
+
+					//1963 int4_avg_accum
+					case 1963:
+					{
+						break;
+					}
+
+					//222 float8_accum
+					case 222:
+					{
+						break;
+					}
+
+					//1219  int8inc
+					case 1219:
+					{
+						break;
+					}
+				}
+				//
 
 				operandStack[operandIterator] = newValue;
 
 				b->StoreIndirect("AggStatePerGroupData", "transValue", r_pergroup, newValue);
 
 				b->Call("print_func",2, b->ConvertTo(Int32, b->LoadIndirect("AggStatePerGroupData", "transValue", r_pergroup)), newValue);
-				//StoreIndirect("AggStatePerGroup", "transValueIsNull", r_pergroup, Load("nullValue"));
+				b->StoreIndirect("AggStatePerGroupData", "transValueIsNull", r_pergroup, /*Load("nullValue")*/b->ConvertTo(bool_type, b->ConstInt32(0)));
+				b->Call("print_func",2, b->ConvertTo(Int32, b->LoadIndirect("AggStatePerGroupData", "transValue", r_pergroup)),
+						b->ConvertTo(Int32, b->LoadIndirect("AggStatePerGroupData", "transValueIsNull", r_pergroup)));
+
+				/*if(opcode == EEOP_AGG_PLAIN_TRANS_STRICT_BYREF)
+				{
+					operandStack[operandIterator] = newValue;
+					b->StoreIndirect("AggStatePerGroupData", "transValue", r_pergroup, newValue);
+					b->StoreIndirect("AggStatePerGroupData", "transValueIsNull", r_pergroup, b->ConvertTo(bool_type, b->ConstInt32(0)));
+				}*/
 
 				b->AddFallThroughBuilder(builders[opno+1]);
 				break;
@@ -2259,49 +2474,49 @@ omrjit_compile_expr::buildIL()
  *
  * */
 
-extern "C" {
+extern "C"
+{
 PG_MODULE_MAGIC;
 
-/*function to compile expression Jit code*/
-OMRJIT_slot_deformFunctionType * omr_compile(ExprState *state,
+   /*function to compile expression Jit code*/
+   OMRJIT_slot_deformFunctionType * omr_compile(ExprState *state,
 						TupleTableSlot *resultslot, TupleTableSlot *innerslot, TupleTableSlot *outerslot, TupleTableSlot *scanslot)
-{
+   {
 
-	StructTypeDictionary joinmethodTypes;
+	   StructTypeDictionary joinmethodTypes;
 
-	omrjit_compile_expr method(&joinmethodTypes, state, resultslot, innerslot, outerslot, scanslot);
-	void *entry=0;
-	int32_t rc = compileMethodBuilder(&method, &entry);
+	   omrjit_compile_expr method(&joinmethodTypes, state, resultslot, innerslot, outerslot, scanslot);
+	   void *entry=0;
+	   int32_t rc = compileMethodBuilder(&method, &entry);
 
-	if (rc != 0)
-	{
+	   if (rc != 0)
+	   {
+		   elog(INFO, "FAIL: compilation error %d\n", rc);
+		   exit(-2);
+	   }
 
-	   elog(INFO, "FAIL: compilation error %d\n", rc);
-	   exit(-2);
-	}
+	   return (OMRJIT_slot_deformFunctionType *)entry;
 
-	return (OMRJIT_slot_deformFunctionType *)entry;
+   }
 
-}
+   /*function to compile tuple deformation Jit code*/
+   OMRJIT_slot_deformFunctionType_att * omr_compile_att(int32_t natts, TupleDesc tupleDesc, TupleTableSlot *slot)
+   {
+	   StructTypeDictionary joinmethodTypes;
 
-/*function to compile tuple deformation Jit code*/
-OMRJIT_slot_deformFunctionType_att * omr_compile_att(int32_t natts, TupleDesc tupleDesc, TupleTableSlot *slot){
+	   slot_compile_deform method(&joinmethodTypes, natts, tupleDesc, slot);
+	   void *entry=0;
+	   int32_t rc = compileMethodBuilder(&method, &entry);
 
-	StructTypeDictionary joinmethodTypes;
+	   if (rc != 0)
+	   {
 
-	slot_compile_deform method(&joinmethodTypes, natts, tupleDesc, slot);
-	void *entry=0;
-	int32_t rc = compileMethodBuilder(&method, &entry);
+		   elog(INFO, "FAIL: compilation error %d\n", rc);
+		   exit(-2);
+	   }
+	   return (OMRJIT_slot_deformFunctionType_att *)entry;
 
-	if (rc != 0)
-	{
-
-		elog(INFO, "FAIL: compilation error %d\n", rc);
-	   exit(-2);
-	}
-	return (OMRJIT_slot_deformFunctionType_att *)entry;
-
-}
+   }
 
 
 }
