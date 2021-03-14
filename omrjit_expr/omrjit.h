@@ -42,15 +42,30 @@ char	omrjit_path[MAXPGPATH];
 /*typedef int32_t (*omr_eval_compile)();
 omr_eval_compile omreval_compile;*/
 
-typedef void (OMRJIT_slot_deformFunctionType)(/*TupleTableSlot **/ExprContext *, int32_t, int32_t, ExprEvalStep *,ExprState *, bool *);
+/*declare info about compilation*/
+#define MAX_no_of_compilations 1000
+int32_t compiled_code_iterator;
+
+typedef Datum (OMRJIT_slot_deformFunctionType)(/*TupleTableSlot **/ExprContext *, int32_t, int32_t, ExprEvalStep *,ExprState *, bool *);
 typedef OMRJIT_slot_deformFunctionType *(omr_eval_compile)(ExprState *, TupleTableSlot *, TupleTableSlot *, TupleTableSlot *,
 															TupleTableSlot *);
 omr_eval_compile *omreval_compile;
 OMRJIT_slot_deformFunctionType *slot_deform;
+OMRJIT_slot_deformFunctionType *slot_agg;
 int32_t irc;
+
+typedef struct omr_compiledcode_info
+{
+	OMRJIT_slot_deformFunctionType *compiledSequence;
+	bool is_sequence_compiled;
+}omr_compiledcode_info;
+
+struct omr_compiledcode_info o_cc_info[MAX_no_of_compilations];
+/* END */
 
 ExprEvalStep *op_omr;
 bool is_compiled_expr;
+bool is_compiled_expr_outerslot;
 
 //Deform
 typedef void (OMRJIT_slot_deformFunctionType_att)(int32_t, TupleTableSlot *, HeapTuple , uint32 *, char *);
