@@ -43,6 +43,8 @@ INFO:  opcode: 73
 INFO:  opcode: 15
 INFO:  opcode: 0
 
+15,79,82
+
 select * from lineitem_test where shipdate>='1994-01-01';
 
 
@@ -136,8 +138,13 @@ int4div 154
 
 float8pl 218
 
+aggregation: int4_sum 1841
 
 
+output:int8out 461
+
+
+  
 
 
 

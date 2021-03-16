@@ -1,4 +1,6 @@
 DemoDB=# select lineitem_test.orderkey, sum(lineitem_test.extendedprice*(1 - lineitem_test.discount)) as revenue,orders_test.orderdate,orders_test.shippriority from customer_test,orders_test,lineitem_test where customer_test.mktsegment='AUTOMOBILE' and customer_test.custkey=orders_test.custkey and lineitem_test.orderkey=orders_test.orderkey and orders_test.orderdate<'1995-03-15' and lineitem_test.shipdate>'1995-03-15' group by lineitem_test.orderkey,orders_test.orderdate,orders_test.shippriority order by revenue desc,orders_test.orderdate;
+
+
 INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1
 
 INFO:  EEOP_FUNCEXPR_STRICT arg2----- 2139062142
@@ -50,7 +52,7 @@ INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1597948832
 
 INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1466967176
 
-INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 740
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 740 
 
 INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
 
@@ -1201,4 +1203,13 @@ INFO:  in EEOP_DONE---------------------------------------------
 (1 row)
 
 DemoDB=# 
+
+
+DemoDB=# select lineitem_test.orderkey, sum(lineitem_test.extendedprice*(1 - lineitem_test.discount)) as revenue,orders_test.orderdate,orders_test.shippriority from customer_test,orders_test,lineitem_test where customer_test.mktsegment='AUTOMOBILE' and customer_test.custkey=orders_test.custkey and lineitem_test.orderkey=orders_test.orderkey and orders_test.orderdate<'1995-03-15' and lineitem_test.shipdate>'1995-03-15' group by lineitem_test.orderkey,orders_test.orderdate,orders_test.shippriority order by revenue desc,orders_test.orderdate;
+
+
+
+
+
+
 

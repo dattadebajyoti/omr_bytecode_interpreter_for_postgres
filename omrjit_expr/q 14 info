@@ -1,0 +1,2366 @@
+
+INFO:      opcode: 0
+INFO:  opcode: 1
+INFO:  opcode: 4
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1583
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1090
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:  opcode: 29
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 779206656
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 2338
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:  opcode: 4
+INFO:  opcode: 7
+INFO:  opcode: 35
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:  opcode: 2
+INFO:  opcode: 1
+INFO:  opcode: 3
+INFO:  opcode: 12
+INFO:  opcode: 13
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 548124680  548124680
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 548124680
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918944  1042918944
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918944
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1869169767
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1869169767
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1869169767
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918794  1042918794
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918794
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1869169767
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1401877325
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1401877325
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1583
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1090
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 779206656
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 2338
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042919101  1042919101
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042919101
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1401877325
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1401877325
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1869169767
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1869169767
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918944  1042918944
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918944
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1869169767
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1168231104
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1168231104
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918794  1042918794
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918794
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1168231104
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1168231104
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1401877325
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1401877325
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1583
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1090
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 779206656
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 2338
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042919101  1042919101
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042919101
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1401877325
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1401877325
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1635523546
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1635523546
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918944  1042918944
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918944
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1635523546
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1635523546
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1869169767
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1869169767
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918794  1042918794
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918794
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1869169767
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 2102815988
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 2102815988
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1583
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1090
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 779206656
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 2338
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042919101  1042919101
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042919101
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 2102815988
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 2102815988
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1168231104
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1168231104
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918944  1042918944
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918944
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1168231104
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1168231104
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- -862429434
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- -862429434
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918794  1042918794
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918794
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ -862429434
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- -862429434
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1401877324
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1401877324
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1583
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1090
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 779206656
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 2338
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042919101  1042919101
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042919101
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1401877324
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1401877324
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- -628783214
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- -628783214
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918944  1042918944
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918944
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ -628783214
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- -628783214
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1635523544
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1635523544
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918794  1042918794
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918794
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1635523544
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1635523544
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- -395136994
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- -395136994
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- -1583
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 1090
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1359
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 779206656
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 2338
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1
+
+INFO:  opcode: 19
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042919101  1042919101
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042919101
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ -395136994
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- -395136994
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 1869169764
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 1869169764
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918944  1042918944
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918944
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 1869169764
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 1869169764
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- -161490774
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- -161490774
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 4
+
+INFO:  opcode: 4
+INFO:      opcode: 7
+
+INFO:  opcode: 7
+INFO:      opcode: 35
+
+INFO:  opcode: 35
+INFO:      opcode: 29
+
+INFO:  opcode: 29
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 2
+
+INFO:  opcode: 2
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 3
+
+INFO:  opcode: 3
+INFO:      opcode: 12
+
+INFO:  opcode: 12
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 13
+
+INFO:  opcode: 13
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1042918794  1042918794
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 1042918794
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 547930400
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 850
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 33
+
+INFO:  opcode: 17
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 0
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- 0
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 0
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 0
+INFO:  opcode: 82
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- -1202590843  -1202590843
+
+INFO:  opcode: 6
+INFO:      opcode: 6
+
+INFO:  EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- 1889785610  1889785610
+
+INFO:  opcode: 6
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1889785610
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1374389535
+
+INFO:  opcode: 19
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- -1202590843
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 1374389535
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 1869169767
+
+INFO:  opcode: 19
+INFO:      opcode: 79
+
+INFO:  opcode: 79
+INFO:      opcode: 82
+
+INFO:  EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- 1
+
+INFO:  ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ -161490774
+INFO:  ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ 1869169767
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- -161490774
+INFO:  ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- 2102815984
+INFO:  ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- 2102815984
+INFO:  opcode: 82
+INFO:      opcode: 0
+
+INFO:  opcode: 1
+INFO:      opcode: 73
+
+INFO:  opcode: 73
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 1
+
+INFO:  opcode: 1
+INFO:      opcode: 73
+
+INFO:  opcode: 73
+INFO:      opcode: 19
+
+INFO:  EEOP_FUNCEXPR_STRICT arg1----- 0
+
+INFO:  EEOP_FUNCEXPR_STRICT arg2----- 2102815984
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 217
+
+INFO:  EEOP_FUNCEXPR_STRICT value of d is ----- 0
+
+INFO:  opcode: 19
+INFO:      opcode: 15
+
+INFO:  opcode: 15
+INFO:      opcode: 0
+
+ promo_revenue 
+---------------
+             0
+(1 row)
+

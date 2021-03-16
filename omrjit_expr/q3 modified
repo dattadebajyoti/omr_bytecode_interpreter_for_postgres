@@ -1,0 +1,59 @@
+select lineitem_test.orderkey, sum(lineitem_test.extendedprice*(1 - lineitem_test.discount)) as revenue,orders_test.orderdate,orders_test.shippriority from customer_test,orders_test,lineitem_test where customer_test.mktsegment='AUTOMOBILE' and customer_test.custkey=orders_test.custkey and lineitem_test.orderkey=orders_test.orderkey and orders_test.orderdate<'1995-03-15' and lineitem_test.shipdate>'1995-03-15' group by lineitem_test.orderkey,orders_test.orderdate,orders_test.shippriority order by revenue desc,orders_test.orderdate;
+
+//working
+select lineitem_test.orderkey, sum((1 - lineitem_test.discount) * lineitem_test.extendedprice) as revenue,orders_test.orderdate from customer_test,orders_test,lineitem_test where customer_test.mktsegment='AUTOMOBILE' and customer_test.custkey=orders_test.custkey and lineitem_test.orderkey=orders_test.orderkey and orders_test.orderdate<'1995-03-15' and orders_test.orderdate>'195-03-15' group by lineitem_test.orderkey,orders_test.orderdate,orders_test.shippriority order by orders_test.orderdate;
+
+select lineitem.orderkey, sum((1-lineitem.discount) * lineitem.extendedprice) as revenue,orders.orderdate from customer,orders,lineitem where customer.mktsegment='AUTOMOBILE' and customer.custkey=orders.custkey and lineitem.orderkey=orders.orderkey and orders.orderdate<'1995-03-15' group by lineitem.orderkey,orders.orderdate,orders.shippriority order by orders.orderdate;
+
+select sum((1-discount) * extendedprice) as revenue from lineitem_test where quantity < 40;
+
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 740 *  ///it was ************1 before and changed to the function responsible**************
+fbp->funcName---------------------------------------------------------------- text_lt 740 *
+
+1 4 7 19 29 0  
+1 4 7 19 29 0
+1 2 1 3 6 5 19 29 0 *
+1 2 12 12 12 0 *
+
+1 4 7 19 29 0
+1 2 1 6 5 19 29 0 
+1 2 1 12 13 13 12 12 0 
+
+1 4 7 19 29 0
+1 2 1 6 5 19 29 0
+1 2 1 12 13 13 12 12 0
+
+1 4 7 19 29 0
+1 2 1 6 5 19 29 0
+1 2 1 12 13 13 12 12 0
+
+1 4 7 19 29 0
+1 2 1 6 5 19 29 0
+1 2 1 12 13 13 12 12 0
+
+1 4 7 19 29 0
+1 2 1 6 5 19 29 0
+1 2 1 12 13 13 12 12 0
+
+1 4 7 19 29 0
+1 2 1 6 5 19 29 0
+1 2 1 12 13 13 12 12 0
+
+1 3 6 6 19 19 79 82 0 
+2 3 5 6 49 29 5 6 49 29 5 6 49 29 0 
+
+1 3 6 6 19 19 79 82 0
+2 3 5 6 49 29 5 6 49 29 5 6 49 29 0
+
+1 3 6 6 19 19 79 82 0
+2 3 5 6 49 29 5 6 49 29 5 6 49 29 0
+
+1 3 6 6 19 19 79 82 0
+2 3 5 6 49 29 5 6 49 29 5 6 49 29 0
+
+1 3 6 6 19 19 79 82 0
+2 3 5 6 49 29 5 6 49 29 5 6 49 29 0
+
+1 3 6 6 19 19 79 82 0
+1 3 13 1 73 15 13 13 0 *

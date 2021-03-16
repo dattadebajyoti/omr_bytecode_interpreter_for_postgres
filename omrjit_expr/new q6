@@ -481,3 +481,27 @@ INFO:  ----------------------
  32146.1784
 (1 row)
 
+debug pointer at:
+line:
+
+debug execExpr.c
+142, 152, 156, 271, 639, 661
+
+
+for aggreggation:float8pl 218
+
+
+
+
+/////////
+slot = ExecProcNode(planstate); execMain.c
+	ExecProcNode
+		ExecProcNodeFirst(PlanState *node)
+			ExecAgg(PlanState *pstate)
+	
+
+
+
+
+
+

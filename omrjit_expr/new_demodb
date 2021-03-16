@@ -216,7 +216,7 @@ iTLB load misses
 clauses.c: 4782: exprstate = ExecInitExpr(expr, NULL); 
 
 
-debajyoti@debajyoti-VirtualBox:~/project/bin$ /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/DemoDir DemoDB
+debajyoti@debajyoti-VirtualBox:~/project/bin$ /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/tpch_scale2 DemoDB
 /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/DemoDir DemoDB
 
 PostgreSQL stand-alone backend 14devel
@@ -243,7 +243,7 @@ arguments: --single -s -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
 
 TR_Options="verbose={performance},vlog=<log.dmp>"
 TR_Options="log=log.gvp.dmp,traceIlGen,traceFull,traceGlobalVP"
-TR_Options="limit={*slot_compile_deform},log=log.gvp.dmp,traceIlGen,traceFull,traceGlobalVP" /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
+TR_Options="limit={*omrjit_compile_expr},log=log.gvp.dmp,traceIlGen,traceFull,traceGlobalVP" /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
 TR_Options="verbose={compilePerformance},vlog=log.dmp" /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
 TR_Options="verbose={compilePerformance},vlog=compilelog.dmp" /home/debajyoti/project/bin/postgres --single -D /home/debajyoti/project/pgsql/tpch_scale4 DemoDB
 

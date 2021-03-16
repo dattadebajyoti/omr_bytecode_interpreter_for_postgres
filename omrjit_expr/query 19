@@ -1,0 +1,53 @@
+SELECT
+    sum(lineitem_test.extendedprice* (1 - lineitem_test.discount)) as revenue
+FROM
+    lineitem_test,
+    parts_test
+WHERE
+    (
+        parts_test.partkey = lineitem_test.partkey
+        AND parts_test.brand = 'Brand#12'
+        AND parts_test.container in ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')
+        AND lineitem_test.quantity >= 1 AND lineitem_test.quantity <= 1 + 10
+        AND parts_test.size between 1 AND 5
+        AND lineitem_test.shipmode in ('AIR', 'AIR REG')
+        AND lineitem_test.shipinstruct = 'DELIVER IN PERSON'
+    )
+    OR
+    (
+        parts_test.partkey = lineitem_test.partkey
+        AND parts_test.brand = 'Brand#23'
+        AND parts_test.container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK')
+        AND lineitem_test.quantity >= 10 AND lineitem_test.quantity <= 10 + 10
+        AND parts_test.size between 1 AND 10
+        AND lineitem_test.shipmode in ('AIR', 'AIR REG')
+        AND lineitem_test.shipinstruct = 'DELIVER IN PERSON'
+    )
+    OR
+    (
+        parts_test.partkey = lineitem_test.partkey
+        AND parts_test.brand = 'Brand#34'
+        AND parts_test.container in ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')
+        AND lineitem_test.quantity >= 20 AND lineitem_test.quantity <= 20 + 10
+        AND parts_test.size between 1 AND 15
+        AND lineitem_test.shipmode in ('AIR', 'AIR REG')
+        AND lineitem_test.shipinstruct = 'DELIVER IN PERSON'
+    );
+
+1|goldenrod lavender spring chocolate lace|Manufacturer#1|Brand#13|PROMO BURNISHED COPPER|7|JUMBO PKG|901.00|ly. slyly ironi
+create table parts(partkey integer,name varchar(1000),mfgr varchar(1000),brand varchar(1000),type varchar(1000),size integer,container varchar(1000),retailprice double precision,comment varchar(1000));
+
+copy parts(partkey,name,mfgr,brand,type,size,container,retailprice,comment) from '/home/debajyoti/tpch-dbgen/data_scale2/part.csv' DELIMITER '|' CSV HEADER;
+
+create table parts_test(partkey integer,name varchar(1000),mfgr varchar(1000),brand varchar(1000),type varchar(1000),size integer,container varchar(1000),retailprice double precision,comment varchar(1000));
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,40 @@
+EEOP_FUNCEXPR_STRICT function to be called----- 1088 date_le done
+
+INFO:  ExecAggPlainTransByVal       flinfo------------------------------------------------ 1841 int4_sum done
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 218 float8pl
+INFO:  ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- 1219
+
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 219 float8mi done
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 216 float8mul done
+INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 218 float8pl done
+INFO:  ExecAggPlainTransByRef   reference    flinfo------------------------------------------------ 1963 int4_avg_accum *
+INFO:  ExecAggPlainTransByRef   reference    flinfo------------------------------------------------ 222 float8_accum *
+INFO:  ExecAggPlainTransByVal       flinfo------------------------------------------------ 1219  int8inc * 
+
+EEOP_NOT_DISTINCT -------------------------------   flinfo--oid---------------------------------------------- 67
+INFO:  fbp->funcName---------------------------------------------------------------- texteq 67
+//make PROMO% like
+SELECT
+    100.00 * sum(case
+        when parts_test.type like '%TIN'
+            then lineitem_test.extendedprice * (1 - lineitem_test.discount)
+        else 0
+    end) / sum(lineitem_test.extendedprice * (1 - lineitem_test.discount)) as promo_revenue
+FROM
+    lineitem_test,
+    parts_test
+WHERE
+    parts_test.partkey = lineitem_test.partkey
+    AND lineitem_test.shipdate >= date '1995-09-01'
+    AND lineitem_test.shipdate < date '1999-09-01';  // + interval '1' month
+
+
+SELECT 100.00 * sum(case when parts.type like '%TIN' then lineitem.extendedprice * (1 - lineitem.discount) else 0 end) / sum(lineitem.extendedprice * (1 - lineitem.discount)) as promo_revenue FROM lineitem, parts WHERE parts.partkey = lineitem.partkey AND lineitem.shipdate >= date '1995-09-01' AND lineitem.shipdate < date '1999-09-01';
+
+from eeop_const and the omr_opcode
+
+2071
+1090
+2338
+216
+217
