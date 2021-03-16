@@ -4,6 +4,7 @@
  *  Created on: Sep. 22, 2020
  *      Author: debajyoti
  */
+#include "executor/execExpr.h"
 
 #ifndef SRC_INCLUDE_JIT_OMRJIT_H_
 #define SRC_INCLUDE_JIT_OMRJIT_H_
@@ -41,10 +42,43 @@ char	omrjit_path[MAXPGPATH];
 /*typedef int32_t (*omr_eval_compile)();
 omr_eval_compile omreval_compile;*/
 
-typedef void (OMRJIT_slot_deformFunctionType)(int32_t, TupleTableSlot *, HeapTuple , uint32 *, char *);
-typedef OMRJIT_slot_deformFunctionType *(omr_eval_compile)(int32_t , TupleDesc , TupleTableSlot */*, const TupleTableSlotOps **/);
+/*declare info about compilation*/
+#define MAX_no_of_compilations 1000
+int32_t compiled_code_iterator;
+
+typedef Datum (OMRJIT_slot_deformFunctionType)(/*TupleTableSlot **/ExprContext *, int32_t, int32_t, ExprEvalStep *,ExprState *, bool *);
+typedef OMRJIT_slot_deformFunctionType *(omr_eval_compile)(ExprState *, TupleTableSlot *, TupleTableSlot *, TupleTableSlot *,
+															TupleTableSlot *);
 omr_eval_compile *omreval_compile;
 OMRJIT_slot_deformFunctionType *slot_deform;
+OMRJIT_slot_deformFunctionType *slot_agg;
+OMRJIT_slot_deformFunctionType *slot_agg1;
+OMRJIT_slot_deformFunctionType *slot_agg2;
+OMRJIT_slot_deformFunctionType *slot_agg3;
+int32_t irc;
+
+typedef struct omr_compiledcode_info
+{
+	OMRJIT_slot_deformFunctionType *compiledSequence;
+	bool is_sequence_compiled;
+}omr_compiledcode_info;
+
+struct omr_compiledcode_info o_cc_info[MAX_no_of_compilations];
+/* END */
+
+ExprEvalStep *op_omr;
+bool is_compiled_expr;
+bool is_compiled_expr_outerslot;
+bool is_compiled_expr_outerslot1;
+bool is_compiled_expr_outerslot2;
+bool is_compiled_expr_outerslot3;
+
+//Deform
+typedef void (OMRJIT_slot_deformFunctionType_att)(int32_t, TupleTableSlot *, HeapTuple , uint32 *, char *);
+typedef OMRJIT_slot_deformFunctionType_att *(omr_eval_compile_att)(int32_t , TupleDesc , TupleTableSlot *);
+omr_eval_compile_att *omreval_compile_att;
+OMRJIT_slot_deformFunctionType_att *slot_deform_att;
+//
 
 //can be deleted
 typedef void (OMRJIT_slot_deformFunctionType_hard_jit)(int32_t, TupleTableSlot *, HeapTuple , uint32 *, char *);
@@ -114,15 +148,15 @@ int indexer;
 
 //bytecode interpreter
 typedef Datum (omr_expression_bytecode_computation_FunctionType)(ExprState *, ExprContext *, bool *);
-typedef omr_expression_bytecode_computation_FunctionType *(omr_vm_compile)(ExprState *, ExprContext *, bool *);
+typedef omr_expression_bytecode_computation_FunctionType *(omr_vm_compile)(ExprState */*, ExprContext *, bool **/);
 omr_vm_compile *omr_bytecode_Interpreter;
 omr_expression_bytecode_computation_FunctionType *omr_vm;
+bool is_BI_compiler;
 //
 
 //new
 bool is_compile_FUNCEXPR_STRICT;
 //
-
 
 
 #endif /* SRC_INCLUDE_JIT_OMRJIT_H_ */
