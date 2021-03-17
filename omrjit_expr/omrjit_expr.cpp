@@ -2470,9 +2470,9 @@ omrjit_compile_expr::buildIL()
 					case 740:
 					{
 						operandIterator++;
-						b->Store("strcmp_val", b->Call("matchString_lessthan",2, b->ConvertTo(pStr, op_top), b->ConvertTo(pStr, op_2nd_top)));
+						//b->Store("strcmp_val", b->Call("matchString_lessthan",2, b->ConvertTo(pStr, op_top), b->ConvertTo(pStr, op_2nd_top)));
 
-						operandStack[operandIterator] = b->Load("strcmp_val")/*b->ConstInt64(1)*/;
+						operandStack[operandIterator] = /*b->Load("strcmp_val")*/b->ConstInt64(1);
 						break;
 					}
 
