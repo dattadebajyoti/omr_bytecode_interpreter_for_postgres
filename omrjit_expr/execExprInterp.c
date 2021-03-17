@@ -128,6 +128,7 @@ static ExprEvalOpLookup reverse_dispatch_table[EEOP_LAST];
 
 #endif							/* EEO_USE_COMPUTED_GOTO */
 
+/*
 #define EEO_NEXT() \
 	do { \
 		elog(INFO, "opcode: %d", ExecEvalStepOp(state, op)); \
@@ -135,6 +136,14 @@ static ExprEvalOpLookup reverse_dispatch_table[EEOP_LAST];
 		elog(INFO, "    opcode: %d\n", ExecEvalStepOp(state, op)); \
 		EEO_DISPATCH(); \
 	} while (0)
+*/
+
+#define EEO_NEXT() \
+	do { \
+		op++; \
+		EEO_DISPATCH(); \
+	} while (0)
+
 
 #define EEO_JUMP(stepno) \
 	do { \
@@ -518,7 +527,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 	{
 		EEO_CASE(EEOP_DONE)
 		{
-			elog(INFO, "in EEOP_DONE--------------------------------------------------------------------------------------------------------------------------------\n");
+			//elog(INFO, "in EEOP_DONE--------------------------------------------------------------------------------------------------------------------------------\n");
 			goto out;
 		}
 		EEO_CASE(EEOP_OMRJITCOMPILE_EXPR)
@@ -662,8 +671,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 				op = op_omr;
 
 				EEO_DISPATCH();
-			}*/
-
+			}
+*/
 			//q3
 			/*if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_SCAN_FETCHSOME
 					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_SCAN_VAR)
@@ -744,7 +753,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			}*/
 
 			//query 14
-			if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_SCAN_FETCHSOME
+			/*if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_SCAN_FETCHSOME
 					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_SCAN_VAR
 					&& ExecEvalStepOp(state, &state->steps[0] + 3) == EEOP_FUNCEXPR_STRICT)
 			{
@@ -785,7 +794,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 				(*slot_agg2)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
 				op = op_omr;
 				EEO_DISPATCH();
-			}
+			}*/
 
 			EEO_NEXT();
 		}
@@ -876,7 +885,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			*op->resvalue = innerslot->tts_values[attnum];
 			*op->resnull = innerslot->tts_isnull[attnum];
 
-			elog(INFO,"EEOP_INNER_VAR *op->resvalue, op->d.fetch.last_var --------------------------------- %d  %d\n", *op->resvalue, innerslot->tts_values[attnum]);
+			//elog(INFO,"EEOP_INNER_VAR *op->resvalue, op->d.fetch.last_var --------------------------------- %d  %d\n", *op->resvalue, innerslot->tts_values[attnum]);
 
 			EEO_NEXT();
 		}
@@ -891,8 +900,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			*op->resvalue = outerslot->tts_values[attnum];
 			*op->resnull = outerslot->tts_isnull[attnum];
 
-			elog(INFO,"EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- %d  %d\n", (*op->resvalue),
-					outerslot->tts_values[attnum]);
+			/*elog(INFO,"EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- %d  %d\n", (*op->resvalue),
+					outerslot->tts_values[attnum]);*/
 
 			/*AggState   *aggstate = castNode(AggState, state->parent);
 			AggStatePerTrans pertrans = op->d.agg_trans.pertrans;
@@ -1029,7 +1038,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			*op->resnull = op->d.constval.isnull;
 			*op->resvalue = op->d.constval.value;
 
-			if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_AGG_STRICT_INPUT_CHECK_ARGS
+			//query 14
+			/*if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_AGG_STRICT_INPUT_CHECK_ARGS
 					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL)
 			{
 				if(is_compiled_expr_outerslot1 == false)
@@ -1040,7 +1050,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 				(*slot_agg1)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
 				op = op_omr;
 				EEO_DISPATCH();
-			}
+			}*/
 
 
 			EEO_NEXT();
@@ -1082,9 +1092,9 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			Datum		d;
 
 
-			elog(INFO,"EEOP_FUNCEXPR_STRICT arg1----- %d\n", fcinfo->args[0].value);
+			/*elog(INFO,"EEOP_FUNCEXPR_STRICT arg1----- %d\n", fcinfo->args[0].value);
 			elog(INFO,"EEOP_FUNCEXPR_STRICT arg2----- %d\n", fcinfo->args[1].value);
-			elog(INFO,"EEOP_FUNCEXPR_STRICT function to be called----- %d\n", op->operatorId);
+			elog(INFO,"EEOP_FUNCEXPR_STRICT function to be called----- %d\n", op->operatorId);*/
 			/* strict function, so check for NULL args */
 			for (int argno = 0; argno < nargs; argno++)
 			{
@@ -1097,7 +1107,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			}
 			fcinfo->isnull = false;
 			d = op->d.func.fn_addr(fcinfo);
-			elog(INFO,"EEOP_FUNCEXPR_STRICT value of d is ----- %d\n", d);
+			/*elog(INFO,"EEOP_FUNCEXPR_STRICT value of d is ----- %d\n", d);*/
 			*op->resvalue = d;
 			*op->resnull = fcinfo->isnull;
 
@@ -1613,11 +1623,11 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 				eqresult = op->d.func.fn_addr(fcinfo);
 				*op->resvalue = eqresult;
 				*op->resnull = fcinfo->isnull;
-				elog(INFO, "EEOP_NOT_DISTINCT ---------------eqresult---------------------------------------------- %d",eqresult);
+				//elog(INFO, "EEOP_NOT_DISTINCT ---------------eqresult---------------------------------------------- %d",eqresult);
 			}
-			elog(INFO, "EEOP_NOT_DISTINCT ---------------fcinfo->args[0].value---------------------------------------------- %d",fcinfo->args[0].value);
+			/*elog(INFO, "EEOP_NOT_DISTINCT ---------------fcinfo->args[0].value---------------------------------------------- %d",fcinfo->args[0].value);
 			elog(INFO, "EEOP_NOT_DISTINCT ---------------fcinfo->args[1].value---------------------------------------------- %d",fcinfo->args[1].value);
-			elog(INFO, "EEOP_NOT_DISTINCT -------------------------------   flinfo--oid---------------------------------------------- %d",fcinfo->flinfo->fn_oid);
+			elog(INFO, "EEOP_NOT_DISTINCT -------------------------------   flinfo--oid---------------------------------------------- %d",fcinfo->flinfo->fn_oid);*/
 
 			EEO_NEXT();
 		}
@@ -2015,7 +2025,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			AggStatePerGroup pergroup =
 			&aggstate->all_pergroups[op->d.agg_trans.setoff][op->d.agg_trans.transno];
 
-			elog(INFO,"EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- %d\n", pertrans->transtypeByVal);
+			//elog(INFO,"EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- %d\n", pertrans->transtypeByVal);
 
 			Assert(pertrans->transtypeByVal);
 
@@ -2044,7 +2054,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			AggStatePerTrans pertrans = op->d.agg_trans.pertrans;
 			AggStatePerGroup pergroup =
 			&aggstate->all_pergroups[op->d.agg_trans.setoff][op->d.agg_trans.transno];
-			elog(INFO, "EEOP_AGG_PLAIN_TRANS_STRICT_BYVAL       op->d.agg_trans.setoff------------------------------------------------ %d",op->d.agg_trans.setoff);
+			//elog(INFO, "EEOP_AGG_PLAIN_TRANS_STRICT_BYVAL       op->d.agg_trans.setoff------------------------------------------------ %d",op->d.agg_trans.setoff);
 
 			Assert(pertrans->transtypeByVal);
 
@@ -2064,9 +2074,9 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			AggStatePerGroup pergroup =
 			&aggstate->all_pergroups[op->d.agg_trans.setoff][op->d.agg_trans.transno];
 
-			elog(INFO, "EEOP_AGG_PLAIN_TRANS_BYVAL       op->d.agg_trans.setoff------------------------------------------------ %d",op->d.agg_trans.setoff);
+			/*elog(INFO, "EEOP_AGG_PLAIN_TRANS_BYVAL       op->d.agg_trans.setoff------------------------------------------------ %d",op->d.agg_trans.setoff);
 			elog(INFO, "EEOP_AGG_PLAIN_TRANS_BYVAL       op->d.agg_trans.transno------------------------------------------------ %d",op->d.agg_trans.transno);
-			elog(INFO, "EEOP_AGG_PLAIN_TRANS_BYVAL       pergroup->transValue------------------------------------------------ %d",pergroup->transValue);
+			elog(INFO, "EEOP_AGG_PLAIN_TRANS_BYVAL       pergroup->transValue------------------------------------------------ %d",pergroup->transValue);*/
 
 			Assert(pertrans->transtypeByVal);
 
@@ -4444,14 +4454,14 @@ ExecAggPlainTransByVal(AggState *aggstate, AggStatePerTrans pertrans,
 	fcinfo->isnull = false;		/* just in case transfn doesn't set it */
 
 	newVal = FunctionCallInvoke(fcinfo);
-	elog(INFO, "ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ %d",fcinfo->args[0].value);
+	/*elog(INFO, "ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ %d",fcinfo->args[0].value);
 	elog(INFO, "ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ %d",fcinfo->args[1].value);
 	elog(INFO, "ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- %d",fcinfo->flinfo->fn_oid);
 	elog(INFO, "ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- %d",pergroup->transValue);
-	elog(INFO, "ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- %d",newVal);
+	elog(INFO, "ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- %d",newVal);*/
 
 	pergroup->transValue = newVal;
-	elog(INFO, "ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- %d",pergroup->transValue);
+	//elog(INFO, "ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- %d",pergroup->transValue);
 	pergroup->transValueIsNull = fcinfo->isnull;
 
 	MemoryContextSwitchTo(oldContext);
@@ -4481,12 +4491,12 @@ ExecAggPlainTransByRef(AggState *aggstate, AggStatePerTrans pertrans,
 	fcinfo->args[0].isnull = pergroup->transValueIsNull;
 	fcinfo->isnull = false;		/* just in case transfn doesn't set it */
 
-	elog(INFO, "ExecAggPlainTransByRef   before    fcinfo->args[0].value------------------------------------------------ %d",fcinfo->args[0].value);
+	/*elog(INFO, "ExecAggPlainTransByRef   before    fcinfo->args[0].value------------------------------------------------ %d",fcinfo->args[0].value);
 	elog(INFO, "ExecAggPlainTransByRef   before    fcinfo->args[1].value------------------------------------------------ %d",fcinfo->args[1].value);
-	elog(INFO, "ExecAggPlainTransByRef   before    flinfo----oid-------------------------------------------- %d",fcinfo->flinfo->fn_oid);
+	elog(INFO, "ExecAggPlainTransByRef   before    flinfo----oid-------------------------------------------- %d",fcinfo->flinfo->fn_oid);*/
 
 	newVal = FunctionCallInvoke(fcinfo);
-	elog(INFO, "ExecAggPlainTransByRef   reference    after-------------------------- %d",newVal);
+	//elog(INFO, "ExecAggPlainTransByRef   reference    after-------------------------- %d",newVal);
 
 	/*
 	 * For pass-by-ref datatype, must copy the new value into aggcontext and
@@ -4510,10 +4520,10 @@ ExecAggPlainTransByRef(AggState *aggstate, AggStatePerTrans pertrans,
 									  pergroup->transValue,
 									  pergroup->transValueIsNull);
 
-	elog(INFO, "ExecAggPlainTransByRef   reference    fcinfo->args[0].value------------------------------------------------ %d",fcinfo->args[0].value);
+	/*elog(INFO, "ExecAggPlainTransByRef   reference    fcinfo->args[0].value------------------------------------------------ %d",fcinfo->args[0].value);
 	elog(INFO, "ExecAggPlainTransByRef   reference     fcinfo->args[1].value------------------------------------------------ %d",fcinfo->args[1].value);
 	elog(INFO, "ExecAggPlainTransByRef   reference    flinfo----oid-------------------------------------------- %d",fcinfo->flinfo->fn_oid);
-	elog(INFO, "ExecAggPlainTransByRef   reference after   newVal = FunctionCallInvoke(fcinfo)-------------------------- %d",newVal);
+	elog(INFO, "ExecAggPlainTransByRef   reference after   newVal = FunctionCallInvoke(fcinfo)-------------------------- %d",newVal);*/
 
 	pergroup->transValue = newVal;
 	pergroup->transValueIsNull = fcinfo->isnull;
