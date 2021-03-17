@@ -1399,6 +1399,9 @@ exec_simple_query(const char *query_string)
 		o_cc_info[compiled_code_iterator].is_sequence_compiled = false;
 	}*/
 	is_compiled_expr_outerslot = false;
+	is_compiled_expr_outerslot2 = false;
+	is_compiled_expr_outerslot1 = false;
+	is_compiled_expr_outerslot3 = false;
 
 	b_is_compiled = false;
 	m_is_compiled = false;
@@ -4235,6 +4238,10 @@ PostgresMain(int argc, char *argv[],
 		o_cc_info[compiled_code_iterator].is_sequence_compiled = false;
 	}*/
 	is_compiled_expr_outerslot = false;
+	is_compiled_expr_outerslot2 = false;
+	is_compiled_expr_outerslot1 = false;
+	is_compiled_expr_outerslot3 = false;
+
 	irc = 0;
 	slot_deform = NULL;
 
