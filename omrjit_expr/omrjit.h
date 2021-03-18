@@ -52,6 +52,9 @@ typedef OMRJIT_slot_deformFunctionType *(omr_eval_compile)(ExprState *, TupleTab
 omr_eval_compile *omreval_compile;
 OMRJIT_slot_deformFunctionType *slot_deform;
 OMRJIT_slot_deformFunctionType *slot_agg;
+OMRJIT_slot_deformFunctionType *slot_agg1;
+OMRJIT_slot_deformFunctionType *slot_agg2;
+OMRJIT_slot_deformFunctionType *slot_agg3;
 int32_t irc;
 
 typedef struct omr_compiledcode_info
@@ -66,6 +69,9 @@ struct omr_compiledcode_info o_cc_info[MAX_no_of_compilations];
 ExprEvalStep *op_omr;
 bool is_compiled_expr;
 bool is_compiled_expr_outerslot;
+bool is_compiled_expr_outerslot1;
+bool is_compiled_expr_outerslot2;
+bool is_compiled_expr_outerslot3;
 
 //Deform
 typedef void (OMRJIT_slot_deformFunctionType_att)(int32_t, TupleTableSlot *, HeapTuple , uint32 *, char *);
