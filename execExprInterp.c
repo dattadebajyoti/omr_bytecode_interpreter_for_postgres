@@ -107,6 +107,7 @@ typedef struct ExprEvalOpLookup
 	ExprEvalOp	op;
 } ExprEvalOpLookup;
 
+
 /* to make dispatch_table accessible outside ExecInterpExpr() */
 static const void **dispatch_table = NULL;
 
@@ -127,11 +128,22 @@ static ExprEvalOpLookup reverse_dispatch_table[EEOP_LAST];
 
 #endif							/* EEO_USE_COMPUTED_GOTO */
 
+/*
+#define EEO_NEXT() \
+	do { \
+		elog(INFO, "opcode: %d", ExecEvalStepOp(state, op)); \
+		op++; \
+		elog(INFO, "    opcode: %d\n", ExecEvalStepOp(state, op)); \
+		EEO_DISPATCH(); \
+	} while (0)
+*/
+
 #define EEO_NEXT() \
 	do { \
 		op++; \
 		EEO_DISPATCH(); \
 	} while (0)
+
 
 #define EEO_JUMP(stepno) \
 	do { \
@@ -141,6 +153,7 @@ static ExprEvalOpLookup reverse_dispatch_table[EEOP_LAST];
 
 
 static Datum ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull);
+static Datum EntryToCompiledExpr(ExprState *state, ExprContext *econtext, bool *isnull);
 static void ExecInitInterpreter(void);
 
 /* support functions */
@@ -331,9 +344,48 @@ ExecReadyInterpretedExpr(ExprState *state)
 #endif							/* EEO_USE_COMPUTED_GOTO */
 
 	state->evalfunc_private = (void *) ExecInterpExpr;
-	//state->evalfunc_private = (void *) (*omr_vm);
+
+	/*if(state->to_be_jitted || state->steps_len > 2)
+	{
+		state->evalfunc_private = (void *) EntryToCompiledExpr;
+	}
+	else
+	{
+		state->evalfunc_private = (void *) ExecInterpExpr;
+	}*/
+	//elog(INFO, "in ExecReadyInterpretedExpr-------------------ExecReadyInterpretedExpr-------------ExecReadyInterpretedExpr------------- %d\n", state->steps_len);
+	//elog(INFO, "in ExecReadyInterpretedExpr-------------------ExecReadyInterpretedExpr-------------ExecReadyInterpretedExpr------------- %d\n", state->to_be_jitted);
 }
 
+static Datum
+EntryToCompiledExpr(ExprState *state, ExprContext *econtext, bool *isnull)
+{
+	ExprEvalStep *op;
+	TupleTableSlot *resultslot;
+	TupleTableSlot *innerslot;
+	TupleTableSlot *outerslot;
+	TupleTableSlot *scanslot;
+
+	op = state->steps;
+	resultslot = state->resultslot;
+	innerslot = econtext->ecxt_innertuple;
+	outerslot = econtext->ecxt_outertuple;
+	scanslot = econtext->ecxt_scantuple;
+	op++;
+
+	if(state->op_seq_compiled == false)
+	{
+		o_cc_info[compiled_code_iterator].compiledSequence = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+		o_cc_info[compiled_code_iterator].is_sequence_compiled = true;
+		state->op_seq_compiled = true;
+		state->handle_to_jitted_code = compiled_code_iterator;
+		compiled_code_iterator++;
+	}
+
+	Datum d = (Datum)(*o_cc_info[state->handle_to_jitted_code].compiledSequence)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+	return d;
+}
 
 /*
  * Evaluate expression identified by "state" in the execution context
@@ -359,6 +411,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 #if defined(EEO_USE_COMPUTED_GOTO)
 	static const void *const dispatch_table[] = {
 		&&CASE_EEOP_DONE,
+		&&CASE_EEOP_OMRJITCOMPILE_EXPR,
 		&&CASE_EEOP_INNER_FETCHSOME,
 		&&CASE_EEOP_OUTER_FETCHSOME,
 		&&CASE_EEOP_SCAN_FETCHSOME,
@@ -466,8 +519,6 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 	outerslot = econtext->ecxt_outertuple;
 	scanslot = econtext->ecxt_scantuple;
 
-	const TupleTableSlotOps *tts_ops = op->d.fetch.kind;
-
 #if defined(EEO_USE_COMPUTED_GOTO)
 	EEO_DISPATCH();
 #endif
@@ -476,21 +527,324 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 	{
 		EEO_CASE(EEOP_DONE)
 		{
+			//elog(INFO, "in EEOP_DONE--------------------------------------------------------------------------------------------------------------------------------\n");
 			goto out;
+		}
+		EEO_CASE(EEOP_OMRJITCOMPILE_EXPR)
+		{
+			//for q1
+			if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_SCAN_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_SCAN_VAR)
+			{
+				//op++;
+				//slot_getsomeattrs(scanslot, op->d.fetch.last_var);
+
+				//intptr_t dispatch_opcode;
+				//op++;
+				if(is_compiled_expr == false)
+				{
+					slot_deform = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr = true;
+					//op = op_omr;
+				}
+
+				(*slot_deform)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}
+
+			//query6
+			/*if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_SCAN_FETCHSOME)
+			{
+				//op++;
+				if(is_compiled_expr_outerslot == false)
+				{
+					slot_agg = (*omreval_compile)(state, innerslot, outerslot, scanslot, resultslot);
+					is_compiled_expr_outerslot = true;
+				}
+
+				(*slot_agg)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+				EEO_DISPATCH();
+			}
+			else if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_OUTER_FETCHSOME)
+			{
+				//op++;
+				if(is_compiled_expr == false)
+				{
+					slot_deform = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr = true;
+				}
+
+				(*slot_deform)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}*/
+			//query6 done
+
+			/*else if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_SCAN_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_ASSIGN_SCAN_VAR)
+			{
+				if(is_compiled_expr_outerslot == false)
+				{
+					slot_agg = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot = true;
+					//op = op_omr;
+				}
+
+				(*slot_agg)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}*/
+
+			/*if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_OUTER_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_ASSIGN_OUTER_VAR)
+			{
+				if(is_compiled_expr_outerslot == false)
+				{
+					slot_agg = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot = true;
+					//op = op_omr;
+				}
+
+				(*slot_agg)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}*/
+
+			//for q1
+
+			else if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_SCAN_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_ASSIGN_SCAN_VAR)
+			{
+				if(is_compiled_expr_outerslot1 == false)
+				{
+					slot_agg1 = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot1 = true;
+					//op = op_omr;
+				}
+
+				(*slot_agg1)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}
+			/*else if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_OUTER_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_OUTER_VAR
+					&& ExecEvalStepOp(state, &state->steps[0] + 3) == EEOP_AGG_PLAIN_TRANS_BYVAL)
+			{
+				if(is_compiled_expr_outerslot == false)
+				{
+					slot_agg = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot = true;
+					//op = op_omr;
+				}
+
+				(*slot_agg)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}*/
+			/*else if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_OUTER_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_ASSIGN_OUTER_VAR)
+			{
+				if(is_compiled_expr_outerslot2 == false)
+				{
+					slot_agg2 = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot2 = true;
+					//op = op_omr;
+				}
+
+				(*slot_agg2)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}*/
+
+			//q3
+			/*if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_SCAN_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_SCAN_VAR)
+			{
+				//intptr_t dispatch_opcode;
+				//op++;
+				if(is_compiled_expr == false)
+				{
+					slot_deform = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr = true;
+					//op = op_omr;
+				}
+
+				(*slot_deform)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}
+			else if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_INNER_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_OMRJITCOMPILE_EXPR
+					&& ExecEvalStepOp(state, &state->steps[0] + 3) == EEOP_OUTER_VAR)
+			{
+				//intptr_t dispatch_opcode;
+				//op++;
+				if(is_compiled_expr_outerslot == false)
+				{
+					slot_agg = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot = true;
+					//op = op_omr;
+				}
+
+				(*slot_agg)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}
+
+			else if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_INNER_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_OMRJITCOMPILE_EXPR
+					&& ExecEvalStepOp(state, &state->steps[0] + 3) == EEOP_ASSIGN_INNER_VAR)
+			{
+				//intptr_t dispatch_opcode;
+				//op++;
+				if(is_compiled_expr_outerslot1 == false)
+				{
+					slot_agg1 = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot1 = true;
+					//op = op_omr;
+				}
+
+				(*slot_agg1)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}
+
+			else if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_OUTER_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_OUTER_VAR
+					&& ExecEvalStepOp(state, &state->steps[0] + 3) == EEOP_OUTER_VAR)
+			{
+				//intptr_t dispatch_opcode;
+				//op++;
+				if(is_compiled_expr_outerslot3 == false)
+				{
+					slot_agg3 = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot3 = true;
+					//op = op_omr;
+				}
+
+				(*slot_agg3)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}*/
+
+			//query 14
+			/*if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_SCAN_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_SCAN_VAR
+					&& ExecEvalStepOp(state, &state->steps[0] + 3) == EEOP_FUNCEXPR_STRICT)
+			{
+				if(is_compiled_expr == false)
+				{
+					slot_deform = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr = true;
+				}
+
+				(*slot_deform)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}
+
+			else if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_SCAN_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_SCAN_VAR
+					&& ExecEvalStepOp(state, &state->steps[0] + 3) == EEOP_NULLTEST_ISNOTNULL)
+			{
+				if(is_compiled_expr_outerslot == false)
+				{
+					slot_agg = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot = true;
+				}
+				(*slot_agg)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+				op = op_omr;
+				EEO_DISPATCH();
+			}
+			else if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_OUTER_FETCHSOME
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_ASSIGN_INNER_VAR)
+			{
+				if(is_compiled_expr_outerslot2 == false)
+				{
+					slot_agg2 = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot2 = true;
+				}
+				(*slot_agg2)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+				op = op_omr;
+				EEO_DISPATCH();
+			}*/
+
+			EEO_NEXT();
 		}
 
 		EEO_CASE(EEOP_INNER_FETCHSOME)
 		{
 			CheckOpSlotCompatibility(op, innerslot);
 
-			slot_getsomeattrs(innerslot, op->d.fetch.last_var);
-			//slot_getsomeattrs_int1(innerslot, op->d.fetch.last_var, tts_ops);
-			/*if(is_compiled == false)
+			//slot_getsomeattrs(innerslot, op->d.fetch.last_var);
+			/*elog(INFO,"EEOP_INNER_FETCHSOME innerslot, op->d.fetch.last_var --------------------------------- %d   %d\n", innerslot->tts_values[op->d.fetch.last_var-1],
+					op->d.fetch.last_var-1);*/
+
+			//for q1
+			if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_OUTER_FETCHSOME)
 			{
-				slot_deform = (*omreval_compile)(op->d.fetch.last_var, innerslot->tts_tupleDescriptor, innerslot, tts_ops);
-				is_compiled = true;
+				if(is_compiled_expr_outerslot3 == false)
+				{
+					slot_agg3 = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot3 = true;
+					//op = op_omr;
+				}
+
+				(*slot_agg3)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
 			}
-			(*slot_deform)(op->d.fetch.last_var, innerslot);*/
+
+			//for q3
+			/*if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_OUTER_FETCHSOME)
+			{
+				if(is_compiled_expr_outerslot2 == false)
+				{
+					slot_agg2 = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot2 = true;
+					//op = op_omr;
+				}
+
+				(*slot_agg2)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+
+				op = op_omr;
+
+				EEO_DISPATCH();
+			}
+			else{
+				CheckOpSlotCompatibility(op, innerslot);
+
+				slot_getsomeattrs(innerslot, op->d.fetch.last_var);
+			}*/
 
 			EEO_NEXT();
 		}
@@ -500,13 +854,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			CheckOpSlotCompatibility(op, outerslot);
 
 			slot_getsomeattrs(outerslot, op->d.fetch.last_var);
-			//slot_getsomeattrs_int1(outerslot, op->d.fetch.last_var, tts_ops);
-			/*if(is_compiled == false)
-			{
-				slot_deform = (*omreval_compile)(op->d.fetch.last_var, outerslot->tts_tupleDescriptor, outerslot, tts_ops);
-				is_compiled = true;
-			}
-			(*slot_deform)(op->d.fetch.last_var, outerslot);*/
+			/*elog(INFO,"EEOP_OUTER_FETCHSOME outerslot, op->d.fetch.last_var --------------------------------- %d   %d\n", outerslot->tts_values[op->d.fetch.last_var-1],
+					op->d.fetch.last_var-1);*/
 
 			EEO_NEXT();
 		}
@@ -516,13 +865,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			CheckOpSlotCompatibility(op, scanslot);
 
 			slot_getsomeattrs(scanslot, op->d.fetch.last_var);
-			//slot_getsomeattrs_int1(scanslot, op->d.fetch.last_var, tts_ops);
-			/*if(is_compiled == false)
-			{
-				slot_deform = (*omreval_compile)(op->d.fetch.last_var, scanslot->tts_tupleDescriptor, scanslot, tts_ops);
-				is_compiled = true;
-			}
-			(*slot_deform)(op->d.fetch.last_var, scanslot);*/
+			/*elog(INFO,"EEOP_SCAN_FETCHSOME scanslot, op->d.fetch.last_var --------------------------------- %d  %d\n", scanslot->tts_values[op->d.fetch.last_var-1],
+					op->d.fetch.last_var-1);*/
 
 			EEO_NEXT();
 		}
@@ -540,7 +884,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			Assert(attnum >= 0 && attnum < innerslot->tts_nvalid);
 			*op->resvalue = innerslot->tts_values[attnum];
 			*op->resnull = innerslot->tts_isnull[attnum];
-			//(*VAR_FunctionType)(attnum, innerslot->tts_values[attnum], innerslot->tts_isnull[attnum], &op->resnull, &op->resvalue);
+
+			//elog(INFO,"EEOP_INNER_VAR *op->resvalue, op->d.fetch.last_var --------------------------------- %d  %d\n", *op->resvalue, innerslot->tts_values[attnum]);
 
 			EEO_NEXT();
 		}
@@ -554,7 +899,18 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			Assert(attnum >= 0 && attnum < outerslot->tts_nvalid);
 			*op->resvalue = outerslot->tts_values[attnum];
 			*op->resnull = outerslot->tts_isnull[attnum];
-			//(*VAR_FunctionType)(attnum, outerslot->tts_values[attnum], outerslot->tts_isnull[attnum], &op->resnull, &op->resvalue);
+
+			/*elog(INFO,"EEOP_OUTER_VAR *op->resvalue-  outerslot->tts_values[attnum]-------------------------------- %d  %d\n", (*op->resvalue),
+					outerslot->tts_values[attnum]);*/
+
+			/*AggState   *aggstate = castNode(AggState, state->parent);
+			AggStatePerTrans pertrans = op->d.agg_trans.pertrans;
+			AggStatePerGroup pergroup =
+			&aggstate->all_pergroups[op->d.agg_trans.setoff][op->d.agg_trans.transno];
+
+			elog(INFO, "EEOP_OUTER_VAR       op->d.agg_trans.setoff------------------------------------------------ %d",op->d.agg_trans.setoff);
+			elog(INFO, "EEOP_OUTER_VAR       op->d.agg_trans.transno------------------------------------------------ %d",op->d.agg_trans.transno);
+			elog(INFO, "EEOP_OUTER_VAR       pergroup->transValue------------------------------------------------ %d",pergroup->transValue);*/
 
 			EEO_NEXT();
 		}
@@ -566,7 +922,6 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			Assert(attnum >= 0 && attnum < scanslot->tts_nvalid);
 			*op->resvalue = scanslot->tts_values[attnum];
 			*op->resnull = scanslot->tts_isnull[attnum];
-			//(*VAR_FunctionType)(attnum, scanslot->tts_values[attnum], scanslot->tts_isnull[attnum], &op->resnull, &op->resvalue);
 
 			EEO_NEXT();
 		}
@@ -609,8 +964,6 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			Assert(attnum >= 0 && attnum < innerslot->tts_nvalid);
 			resultslot->tts_values[resultnum] = innerslot->tts_values[attnum];
 			resultslot->tts_isnull[resultnum] = innerslot->tts_isnull[attnum];
-			//(*ASSIGN_VAR_FunctionType)(&resultslot->tts_values[resultnum], &resultslot->tts_isnull[resultnum], innerslot->tts_values[attnum], innerslot->tts_isnull[attnum]);
-			//(*ASSIGN_VAR_FunctionType)(op->d.assign_var.resultnum, resultslot, innerslot->tts_values[attnum], innerslot->tts_isnull[attnum]);
 
 			EEO_NEXT();
 		}
@@ -627,8 +980,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			Assert(attnum >= 0 && attnum < outerslot->tts_nvalid);
 			resultslot->tts_values[resultnum] = outerslot->tts_values[attnum];
 			resultslot->tts_isnull[resultnum] = outerslot->tts_isnull[attnum];
-			//(*ASSIGN_VAR_FunctionType)(&resultslot->tts_values[resultnum], &resultslot->tts_isnull[resultnum], outerslot->tts_values[attnum], outerslot->tts_isnull[attnum]);
-			//(*ASSIGN_VAR_FunctionType)(op->d.assign_var.resultnum, resultslot, outerslot->tts_values[attnum], outerslot->tts_isnull[attnum]);
+
+			//elog(INFO, "EEOP_ASSIGN_OUTER_VAR  resultslot->tts_values[resultnum]------------------------------------------------ %d",resultslot->tts_values[resultnum]);
 
 			EEO_NEXT();
 		}
@@ -645,8 +998,9 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			Assert(attnum >= 0 && attnum < scanslot->tts_nvalid);
 			resultslot->tts_values[resultnum] = scanslot->tts_values[attnum];
 			resultslot->tts_isnull[resultnum] = scanslot->tts_isnull[attnum];
-			//(*ASSIGN_VAR_FunctionType)(&resultslot->tts_values[resultnum], &resultslot->tts_isnull[resultnum], scanslot->tts_values[attnum], scanslot->tts_isnull[attnum]);
-			//(*ASSIGN_VAR_FunctionType)(op->d.assign_var.resultnum, resultslot, scanslot->tts_values[attnum], scanslot->tts_isnull[attnum]);
+
+			/*elog(INFO, "EEOP_ASSIGN_SCAN_VAR  scanslot->tts_values[attnum]------------------------------------------------ %d",scanslot->tts_values[attnum]);
+			elog(INFO, "EEOP_ASSIGN_SCAN_VAR  resultslot->tts_values[resultnum]------------------------------------------------ %d",resultslot->tts_values[resultnum]);*/
 
 			EEO_NEXT();
 		}
@@ -657,6 +1011,9 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 
 			resultslot->tts_values[resultnum] = state->resvalue;
 			resultslot->tts_isnull[resultnum] = state->resnull;
+
+			//elog(INFO, "EEOP_ASSIGN_TMP       state->resvalue------------------------------------------------ %d",state->resvalue);
+			//elog(INFO, "EEOP_ASSIGN_TMP ------------------------ %d", resultslot->tts_values[resultnum]);
 
 			EEO_NEXT();
 		}
@@ -671,8 +1028,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 					MakeExpandedObjectReadOnlyInternal(state->resvalue);
 			else
 				resultslot->tts_values[resultnum] = state->resvalue;
-			/*EEOP_ASSIGN_TMP_MAKE_RO_Func(resultnum, resultslot, state);*/
 
+			//elog(INFO, "EEOP_ASSIGN_TMP_MAKE_RO       resultslot->tts_values[resultnum]------------------------------------------------ %d",resultslot->tts_values[resultnum]);
 			EEO_NEXT();
 		}
 
@@ -680,6 +1037,21 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 		{
 			*op->resnull = op->d.constval.isnull;
 			*op->resvalue = op->d.constval.value;
+
+			//query 14
+			/*if(ExecEvalStepOp(state, &state->steps[0] + 1) == EEOP_AGG_STRICT_INPUT_CHECK_ARGS
+					&& ExecEvalStepOp(state, &state->steps[0] + 2) == EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL)
+			{
+				if(is_compiled_expr_outerslot1 == false)
+				{
+					slot_agg1 = (*omreval_compile)(state, resultslot, innerslot, outerslot, scanslot);
+					is_compiled_expr_outerslot1 = true;
+				}
+				(*slot_agg1)(econtext, op->d.fetch.last_var, op->d.var.attnum, op, state, isnull);
+				op = op_omr;
+				EEO_DISPATCH();
+			}*/
+
 
 			EEO_NEXT();
 		}
@@ -719,28 +1091,26 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			int			nargs = op->d.func.nargs;
 			Datum		d;
 
+
+			/*elog(INFO,"EEOP_FUNCEXPR_STRICT arg1----- %d\n", fcinfo->args[0].value);
+			elog(INFO,"EEOP_FUNCEXPR_STRICT arg2----- %d\n", fcinfo->args[1].value);
+			elog(INFO,"EEOP_FUNCEXPR_STRICT function to be called----- %d\n", op->operatorId);*/
 			/* strict function, so check for NULL args */
 			for (int argno = 0; argno < nargs; argno++)
 			{
+				//elog(INFO,"arg in loop----- %d\n", ((DateADT) ((int32) ((fcinfo->args[argno].value)))));
 				if (args[argno].isnull)
 				{
 					*op->resnull = true;
 					goto strictfail;
 				}
 			}
-			/*if(!is_compile_FUNCEXPR_STRICT)
-			{
-				FUNCEXPR_STRICT = (*expr_funcexprstrict_compile)(op->d.func.nargs, fcinfo->args);
-				is_compile_FUNCEXPR_STRICT = true;
-			}
-			if(FUNCEXPR_STRICT(&op->resnull, &op->resvalue, op->d.func.fn_addr(fcinfo), fcinfo))
-			{
-				EEO_NEXT();
-			}*/
 			fcinfo->isnull = false;
 			d = op->d.func.fn_addr(fcinfo);
+			/*elog(INFO,"EEOP_FUNCEXPR_STRICT value of d is ----- %d\n", d);*/
 			*op->resvalue = d;
 			*op->resnull = fcinfo->isnull;
+
 
 	strictfail:
 			EEO_NEXT();
@@ -922,10 +1292,6 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 				*op->resvalue = BoolGetDatum(false);
 				EEO_JUMP(op->d.qualexpr.jumpdone);
 			}
-			/*if(qual_FunctionType(&op->resnull, &op->resvalue))
-			{
-				EEO_JUMP(op->d.qualexpr.jumpdone);
-			}*/
 
 			/*
 			 * Otherwise, leave the TRUE value in place, in case this is the
@@ -980,6 +1346,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 		{
 			*op->resvalue = BoolGetDatum(!*op->resnull);
 			*op->resnull = false;
+			//elog(INFO,"EEOP_NULLTEST_ISNOTNULL------------EEOP_NULLTEST_ISNOTNULL------------------------------------------------- %d %d", *op->resvalue, *op->resnull);
 
 			EEO_NEXT();
 		}
@@ -1256,8 +1623,11 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 				eqresult = op->d.func.fn_addr(fcinfo);
 				*op->resvalue = eqresult;
 				*op->resnull = fcinfo->isnull;
+				//elog(INFO, "EEOP_NOT_DISTINCT ---------------eqresult---------------------------------------------- %d",eqresult);
 			}
-			//EEOP_NOT_DISTINCT_FUNC(&op->resnull, &op->resvalue, op->d.func.fn_addr(fcinfo), fcinfo);
+			/*elog(INFO, "EEOP_NOT_DISTINCT ---------------fcinfo->args[0].value---------------------------------------------- %d",fcinfo->args[0].value);
+			elog(INFO, "EEOP_NOT_DISTINCT ---------------fcinfo->args[1].value---------------------------------------------- %d",fcinfo->args[1].value);
+			elog(INFO, "EEOP_NOT_DISTINCT -------------------------------   flinfo--oid---------------------------------------------- %d",fcinfo->flinfo->fn_oid);*/
 
 			EEO_NEXT();
 		}
@@ -1520,7 +1890,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 
 			*op->resvalue = econtext->ecxt_aggvalues[aggno];
 			*op->resnull = econtext->ecxt_aggnulls[aggno];
-			//EEOP_AGGREF_Func(&op->resnull, &op->resvalue, econtext->ecxt_aggvalues[aggno], econtext->ecxt_aggnulls[aggno]);
+			//elog(INFO, "EEOP_AGGREF       econtext->ecxt_aggvalues[aggno]------------------------------------------------ %d",econtext->ecxt_aggvalues[aggno]);
+			//elog(INFO,"EEOP_AGGREF *op->resvalue and op->d.aggref.aggno----------------------------------------- %d  %d", *op->resvalue, op->d.aggref.aggno);
 
 			EEO_NEXT();
 		}
@@ -1598,6 +1969,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 
 			for (int argno = 0; argno < nargs; argno++)
 			{
+				/*elog(INFO,"EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- %d\n", (int32) args[argno].value);
+				elog(INFO,"EEOP_AGG_STRICT_INPUT_CHECK_ARGS value of args is ----- %d\n", (int32) args[argno].isnull);*/
 				if (args[argno].isnull)
 					EEO_JUMP(op->d.agg_strict_input_check.jumpnull);
 			}
@@ -1652,6 +2025,8 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			AggStatePerGroup pergroup =
 			&aggstate->all_pergroups[op->d.agg_trans.setoff][op->d.agg_trans.transno];
 
+			//elog(INFO,"EEOP_AGG_PLAIN_TRANS_INIT_STRICT_BYVAL *pertrans->transtypeByVal--------------------------------- %d\n", pertrans->transtypeByVal);
+
 			Assert(pertrans->transtypeByVal);
 
 			if (pergroup->noTransValue)
@@ -1679,6 +2054,7 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			AggStatePerTrans pertrans = op->d.agg_trans.pertrans;
 			AggStatePerGroup pergroup =
 			&aggstate->all_pergroups[op->d.agg_trans.setoff][op->d.agg_trans.transno];
+			//elog(INFO, "EEOP_AGG_PLAIN_TRANS_STRICT_BYVAL       op->d.agg_trans.setoff------------------------------------------------ %d",op->d.agg_trans.setoff);
 
 			Assert(pertrans->transtypeByVal);
 
@@ -1697,6 +2073,10 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 			AggStatePerTrans pertrans = op->d.agg_trans.pertrans;
 			AggStatePerGroup pergroup =
 			&aggstate->all_pergroups[op->d.agg_trans.setoff][op->d.agg_trans.transno];
+
+			/*elog(INFO, "EEOP_AGG_PLAIN_TRANS_BYVAL       op->d.agg_trans.setoff------------------------------------------------ %d",op->d.agg_trans.setoff);
+			elog(INFO, "EEOP_AGG_PLAIN_TRANS_BYVAL       op->d.agg_trans.transno------------------------------------------------ %d",op->d.agg_trans.transno);
+			elog(INFO, "EEOP_AGG_PLAIN_TRANS_BYVAL       pergroup->transValue------------------------------------------------ %d",pergroup->transValue);*/
 
 			Assert(pertrans->transtypeByVal);
 
@@ -1790,6 +2170,9 @@ ExecInterpExpr(ExprState *state, ExprContext *econtext, bool *isnull)
 
 out:
 	*isnull = state->resnull;
+	/*elog(INFO, "----------------------state->to_be_jitted ++++++++++++++++++++++++++++++++++++++++++++ : %d\n", state->to_be_jitted);
+	elog(INFO, "----------------------------------------------state->resvalue: %d\n",  state->resvalue);*/
+	//elog(INFO, "*isnull: %d\n",   *isnull);
 	return state->resvalue;
 }
 
@@ -1809,7 +2192,7 @@ ExecInterpExprStillValid(ExprState *state, ExprContext *econtext, bool *isNull)
 
 	/*omr_bytecode_Interpreter = (omr_vm_compile *)load_external_function(omrjit_path, "omr_expr_compiler", true, NULL);
 	omr_vm = (*omr_bytecode_Interpreter)(state, econtext, isNull);
-	state->evalfunc_private = (void *)omr_vm;*/
+	state->evalfunc_private = (void *)(*omr_vm);*/
 
 	/* skip the check during further executions */
 	state->evalfunc = (ExprStateEvalFunc) state->evalfunc_private;
@@ -4071,8 +4454,14 @@ ExecAggPlainTransByVal(AggState *aggstate, AggStatePerTrans pertrans,
 	fcinfo->isnull = false;		/* just in case transfn doesn't set it */
 
 	newVal = FunctionCallInvoke(fcinfo);
+	/*elog(INFO, "ExecAggPlainTransByVal       fcinfo->args[0].value------------------------------------------------ %d",fcinfo->args[0].value);
+	elog(INFO, "ExecAggPlainTransByVal       fcinfo->args[1].value------------------------------------------------ %d",fcinfo->args[1].value);
+	elog(INFO, "ExecAggPlainTransByVal       flinfo--oid---------------------------------------------- %d",fcinfo->flinfo->fn_oid);
+	elog(INFO, "ExecAggPlainTransByVal       pergroup->transValue  before-------------------------- %d",pergroup->transValue);
+	elog(INFO, "ExecAggPlainTransByVal       newVal = FunctionCallInvoke(fcinfo)-------------------------- %d",newVal);*/
 
 	pergroup->transValue = newVal;
+	//elog(INFO, "ExecAggPlainTransByVal       pergroup->transValue  after-------------------------- %d",pergroup->transValue);
 	pergroup->transValueIsNull = fcinfo->isnull;
 
 	MemoryContextSwitchTo(oldContext);
@@ -4102,7 +4491,12 @@ ExecAggPlainTransByRef(AggState *aggstate, AggStatePerTrans pertrans,
 	fcinfo->args[0].isnull = pergroup->transValueIsNull;
 	fcinfo->isnull = false;		/* just in case transfn doesn't set it */
 
+	/*elog(INFO, "ExecAggPlainTransByRef   before    fcinfo->args[0].value------------------------------------------------ %d",fcinfo->args[0].value);
+	elog(INFO, "ExecAggPlainTransByRef   before    fcinfo->args[1].value------------------------------------------------ %d",fcinfo->args[1].value);
+	elog(INFO, "ExecAggPlainTransByRef   before    flinfo----oid-------------------------------------------- %d",fcinfo->flinfo->fn_oid);*/
+
 	newVal = FunctionCallInvoke(fcinfo);
+	//elog(INFO, "ExecAggPlainTransByRef   reference    after-------------------------- %d",newVal);
 
 	/*
 	 * For pass-by-ref datatype, must copy the new value into aggcontext and
@@ -4125,6 +4519,11 @@ ExecAggPlainTransByRef(AggState *aggstate, AggStatePerTrans pertrans,
 									  newVal, fcinfo->isnull,
 									  pergroup->transValue,
 									  pergroup->transValueIsNull);
+
+	/*elog(INFO, "ExecAggPlainTransByRef   reference    fcinfo->args[0].value------------------------------------------------ %d",fcinfo->args[0].value);
+	elog(INFO, "ExecAggPlainTransByRef   reference     fcinfo->args[1].value------------------------------------------------ %d",fcinfo->args[1].value);
+	elog(INFO, "ExecAggPlainTransByRef   reference    flinfo----oid-------------------------------------------- %d",fcinfo->flinfo->fn_oid);
+	elog(INFO, "ExecAggPlainTransByRef   reference after   newVal = FunctionCallInvoke(fcinfo)-------------------------- %d",newVal);*/
 
 	pergroup->transValue = newVal;
 	pergroup->transValueIsNull = fcinfo->isnull;
