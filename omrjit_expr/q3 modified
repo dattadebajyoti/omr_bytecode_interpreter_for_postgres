@@ -5,7 +5,11 @@ select lineitem_test.orderkey, sum((1 - lineitem_test.discount) * lineitem_test.
 
 select lineitem.orderkey, sum((1-lineitem.discount) * lineitem.extendedprice) as revenue,orders.orderdate from customer,orders,lineitem where customer.mktsegment='AUTOMOBILE' and customer.custkey=orders.custkey and lineitem.orderkey=orders.orderkey and orders.orderdate<'1995-03-15' group by lineitem.orderkey,orders.orderdate,orders.shippriority order by orders.orderdate;
 
+select lineitem.orderkey, sum((1-lineitem.discount) * lineitem.extendedprice) as revenue,orders.orderdate from customer,orders,lineitem where customer.mktsegment='AUTOMOBILE' and customer.custkey=orders.custkey and lineitem.orderkey=orders.orderkey and orders.orderdate<'1995-03-15' group by lineitem.orderkey,orders.orderdate,orders.shippriority order by orders.orderdate;
+
 select sum((1-discount) * extendedprice) as revenue from lineitem_test where quantity < 40;
+
+select lineitem.orderkey, sum((1-lineitem.discount) * lineitem.extendedprice) as revenue,orders.orderdate from customer,orders,lineitem where customer.mktsegment='AUTOMOBILE' and customer.custkey=orders.custkey and lineitem.orderkey=orders.orderkey and orders.orderdate<'1995-03-15' group by lineitem.orderkey,orders.orderdate,orders.shippriority order by orders.orderdate limit 20;
 
 
 INFO:  EEOP_FUNCEXPR_STRICT function to be called----- 740 *  ///it was ************1 before and changed to the function responsible**************
