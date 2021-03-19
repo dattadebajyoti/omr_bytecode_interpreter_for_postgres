@@ -1,0 +1,67 @@
+Samples: 7K of event 'cpu-clock:pppH', Event count (approx.): 1947750000
+  Children      Self       Samples  Command   Shared Object       Symbol
+-   43.38%    43.27%          3371  postgres  postgres            [.] ExecInterpExpr                                                                                                  ▒
+   - 20.55% 0x1                                                                                                                                                                       ▒
+        ExecInterpExpr                                                                                                                                                                ▒
+   - 20.11% 0                                                                                                                                                                         ▒
+        ExecInterpExpr                                                                                                                                                                ◆
+   - 2.61% 0x559296867598                                                                                                                                                             ▒
+        ExecInterpExpr                                                                                                                                                                ▒
+-   26.74%     0.00%             0  postgres  [unknown]           [.] 0x0000000000000001                                                                                              ▒
+   - 0x1                                                                                                                                                                              ▒
+        20.64% ExecInterpExpr                                                                                                                                                         ▒
+        1.71% date_lt_timestamp                                                                                                                                                       ▒
+        1.39% float8ge                                                                                                                                                                ▒
+        0.80% float8le                                                                                                                                                                ▒
+        0.64% int4lt                                                                                                                                                                  ▒
+        0.53% date_ge                                                                                                                                                                 ▒
+-   25.82%     0.00%             0  postgres  [unknown]           [.] 0000000000000000                                                                                                ▒
+   - 0                                                                                                                                                                                ▒
+        20.14% ExecInterpExpr                                                                                                                                                         ▒
+        1.51% date_ge                                                                                                                                                                 ▒
+        0.89% CheckOpSlotCompatibility.isra.3                                                                                                                                         ▒
+        0.85% float8pl                                                                                                                                                                ▒
+        0.82% float8mul                                                                                                                                                               ▒
+        0.60% slot_getsomeattrs_int                                                                                                                                                   ▒
+-   11.23%    11.22%           874  postgres  postgres            [.] tts_buffer_heap_getsomeattrs                                                                                    ▒
+     7.26% tts_buffer_heap_getsomeattrs                                                                                                                                               ▒
+   - 3.97% 0x559294ecf8a0                                                                                                                                                             ▒
+        tts_buffer_heap_getsomeattrs                                                                 
+
+
+
+
+
+
+
+
+Samples: 8K of event 'cpu-clock:pppH', Event count (approx.): 2031500000
+  Children      Self       Samples  Command   Shared Object       Symbol
+-   43.37%    43.13%          3505  postgres  postgres            [.] ExecInterpExpr                                                                                                  ▒
+   - 20.90% 0x1                                                                                                                                                                       ▒
+        ExecInterpExpr                                                                                                                                                                ▒
+   - 19.44% 0                                                                                                                                                                         ▒
+        ExecInterpExpr                                                                                                                                                                ◆
+   - 2.79% 0x55c4b8d1a6f8                                                                                                                                                             ▒
+        ExecInterpExpr                                                                                                                                                                ▒
+-   26.42%     0.00%             0  postgres  [unknown]           [.] 0x0000000000000001                                                                                              ▒
+   - 0x1                                                                                                                                                                              ▒
+        21.02% ExecInterpExpr                                                                                                                                                         ▒
+        1.55% float8ge                                                                                                                                                                ▒
+        1.34% date_lt                                                                                                                                                                 ▒
+        0.92% float8le                                                                                                                                                                ▒
+        0.59% int4lt                                                                                                                                                                  ▒
+        0.50% date_ge                                                                                                                                                                 ▒
+-   24.85%     0.00%             0  postgres  [unknown]           [.] 0000000000000000                                                                                                ▒
+   - 0                                                                                                                                                                                ▒
+        19.54% ExecInterpExpr                                                                                                                                                         ▒
+        1.45% date_ge                                                                                                                                                                 ▒
+        0.91% CheckOpSlotCompatibility.isra.3                                                                                                                                         ▒
+        0.73% float8mul                                                                                                                                                               ▒
+        0.65% slot_getsomeattrs_int                                                                                                                                                   ▒
+        0.53% ExecAgg                                                                                                                                                                 ▒
+        0.50% float8pl                                                                                                                                                                ▒
+-   11.25%    11.20%           910  postgres  postgres            [.] tts_buffer_heap_getsomeattrs                                                                                    ▒
+     7.26% tts_buffer_heap_getsomeattrs                                                                                                                                               ▒
+   - 3.99% 0x55c4b84d38a0                                                                                                                                                             ▒
+        tts_buffer_heap_getsomeattrs      

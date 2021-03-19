@@ -1,0 +1,68 @@
+Samples: 5K of event 'cpu-clock:pppH', Event count (approx.): 1491250000
+  Children      Self       Samples  Command   Shared Object       Symbol
+-   25.11%     0.00%             0  postgres  [unknown]           [.] 0000000000000000                                                                                                ▒
+   - 0                                                                                                                                                                                ◆
+      - 10.31% ExecInterpExpr                                                                                                                                                         ▒
+         + 2.68% omr_compile                                                                                                                                                          ▒
+        5.63% omrjit_expr.cpp:1145:omrjit_compile_expr_warm (compiled code)                                                                                                           ▒
+        3.87% ExecEvalStepOp                                                                                                                                                          ▒
+        1.91% omrjit_expr.cpp:1145:omrjit_compile_expr_warm (compiled code)                                                                                                           ▒
+        1.31% slot_getsomeattrs_int_func                                                                                                                                              ▒
+        0.69% ExecAgg                                                                                                                                                                 ▒
+        0.57% slot_getsomeattrs_int                                                                                                                                                   ▒
+        0.50% fetch_input_tuple                                                                                                                                                       ▒
+-   18.91%    18.83%          1123  postgres  postgres            [.] tts_buffer_heap_getsomeattrs                                                                                    ▒
+     13.31% tts_buffer_heap_getsomeattrs                                                                                                                                              ▒
+   - 5.60% 0x55a46a3eb8a0                                                                                                                                                             ▒
+        tts_buffer_heap_getsomeattrs                                                                                                                                                  ▒
+-   15.34%    12.54%           748  postgres  postgres            [.] ExecInterpExpr                                                                                                  ▒
+   - 7.53% 0                                                                                                                                                                          ▒
+        ExecInterpExpr                                                                                                                                                                ▒
+   - 3.45% 0x55a46b00f738                                                                                                                                                             ▒
+        ExecInterpExpr                                                                                                                                                                ▒
+   - 2.80% ExecInterpExpr                                                                                                                                                             ▒
+      + 2.68% omr_compile                                                                                                                                                             ▒
+   - 1.56% 0x1                                                                                                                                                                        ▒
+        ExecInterpExpr                                                                                                                                                                ▒
++   12.69%     0.00%             0  postgres  [unknown]           [.] 0x000055a46a3eb8a0                  
+
+
+
+
+
+
+
+
+Samples: 5K of event 'cpu-clock:pppH', Event count (approx.): 1480250000
+  Children      Self       Samples  Command   Shared Object       Symbol
+-   25.54%     0.00%             0  postgres  [unknown]           [.] 0000000000000000                                                                                                ◆
+   - 0                                                                                                                                                                                ▒
+      - 10.71% ExecInterpExpr                                                                                                                                                         ▒
+         - omr_compile                                                                                                                                                                ▒
+           compileMethodBuilder                                                                                                                                                       ▒
+           internal_compileMethodBuilder                                                                                                                                              ▒
+           OMR::MethodBuilder::Compile                                                                                                                                                ▒
+         - compileMethodFromDetails                                                                                                                                                   ▒
+            - 2.90% OMR::Compilation::compile                                                                                                                                         ▒
+               - 2.45% OMR::Compilation::performOptimizations                                                                                                                         ▒
+                  - OMR::Optimizer::optimize                                                                                                                                          ▒
+                       2.43% OMR::Optimizer::performOptimization                                                                                                                      ▒
+        6.05% omrjit_expr.cpp:1145:omrjit_compile_expr_warm (compiled code)                                                                                                           ▒
+        2.75% ExecEvalStepOp                                                                                                                                                          ▒
+        2.28% omrjit_expr.cpp:1145:omrjit_compile_expr_warm (compiled code)                                                                                                           ▒
+        0.98% ExecAgg                                                                                                                                                                 ▒
+        0.96% slot_getsomeattrs_int_func                                                                                                                                              ▒
+        0.86% slot_getsomeattrs_int                                                                                                                                                   ▒
+-   16.99%    16.92%          1002  postgres  postgres            [.] tts_buffer_heap_getsomeattrs                                                                                    ▒
+     10.79% tts_buffer_heap_getsomeattrs                                                                                                                                              ▒
+   - 6.20% 0x5644bebe68a0                                                                                                                                                             ▒
+        tts_buffer_heap_getsomeattrs                                                                                                                                                  ▒
+-   15.77%    12.77%           756  postgres  postgres            [.] ExecInterpExpr                                                                                                  ▒
+   - 7.79% 0                                                                                                                                                                          ▒
+        ExecInterpExpr                                                                                                                                                                ▒
+   - 3.02% 0x5644bfed86f8                                                                                                                                                             ▒
+        ExecInterpExpr                                                                                                                                                                ▒
+   - 3.01% ExecInterpExpr                                                                                                                                                             ▒
+      + 2.92% omr_compile                                                                                                                                                             ▒
+   - 1.96% 0x1                                                                                                                                                                        ▒
+        ExecInterpExpr
